@@ -1,4 +1,4 @@
-package com.tactoctical.mobilepushnotifications;
+package com.tactoctical.scriptpushnotifications;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.tactoctical.mobilepushnotifications", appContext.getPackageName());
+        assertEquals("com.tactoctical.scriptpushnotifications", appContext.getPackageName());
     }
 }

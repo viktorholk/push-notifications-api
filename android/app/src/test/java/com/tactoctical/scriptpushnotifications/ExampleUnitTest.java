@@ -1,4 +1,4 @@
-package com.tactoctical.mobilepushnotifications;
+package com.tactoctical.scriptpushnotifications;
 
 import org.junit.Test;
 

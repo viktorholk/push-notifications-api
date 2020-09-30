@@ -1,2 +1,2 @@
-## Mobile Push Notifications
+## Script Push Notifications
 Send mobile push notifications from your Python scripts
