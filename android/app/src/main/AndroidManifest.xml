@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tactoctical.scriptpushnotifications">
+    package="com.tactoctical.apipushnotifications">
 
     <application
         android:allowBackup="true"
