@@ -3,10 +3,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.tactoctical.apipushnotifications.NotificationService;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         String endpoint     = sharedPreferences.getString("endpoint", null);
 
         if (endpoint == null){
-            Intent intent = new Intent(this, Options.class);
+            Intent intent = new Intent(this, OptionsActivity.class);
             startActivity(intent);
         }
 
@@ -43,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(view.getContext(), Options.class);
+                        Intent intent = new Intent(view.getContext(), OptionsActivity.class);
                         startActivity(intent);
                     }
                 }
@@ -57,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        NotificationService notificationService = new NotificationService(view.getContext());
-                        notificationService.DeployNotification();
+
                     }
                 }
         );
@@ -89,5 +86,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        // Start service
+        Intent intent = new Intent(this, AppService.class);
+        startForegroundService(intent);
     }
 }
