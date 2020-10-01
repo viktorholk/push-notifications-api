@@ -1,6 +1,8 @@
 package com.tactoctical.apipushnotifications;
+import com.tactoctical.apipushnotifications.NotificationService;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,5 +45,17 @@ public class MainActivity extends AppCompatActivity {
 
         TextView _3 = findViewById(R.id.textView3);
         _3.setText(sharedPreferences.getString("endpoint", "empty"));
+
+        Button notificationButton = findViewById(R.id.notificationButton);
+        notificationButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        NotificationService notificationService = new NotificationService(view.getContext());
+                        notificationService.DeployNotification();
+
+                    }
+                }
+        );
     }
 }
