@@ -6,10 +6,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -86,9 +88,47 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+        final Intent intent = new Intent(this, AppService.class);
 
-        // Start service
-        Intent intent = new Intent(this, AppService.class);
-        startForegroundService(intent);
+        final TextView serviceStatus = findViewById(R.id.serviceStatus);
+
+        Button startButton = findViewById(R.id.startButton);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Start service
+                startForegroundService(intent);
+                serviceStatus.setText("Running");
+            }
+        });
+
+        Button stopButton = findViewById(R.id.stopButton);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopService(intent);
+                serviceStatus.setText("Stopped");
+            }
+        });
+
+        if (isServiceRunning(AppService.class)){
+            serviceStatus.setText("Running");
+        }
+        else{
+            serviceStatus.setText("Stopped");
+        }
+
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("Service status", "Running");
+                return true;
+            }
+        }
+        Log.i ("Service status", "Not running");
+        return false;
     }
 }
