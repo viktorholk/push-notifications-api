@@ -1,6 +1,22 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 app = Flask(__name__)
 
-@app.route('/')
+notifications = []
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return 'API Push Notifications<br >Read the readme for more infomation.'
+    if request.method == 'POST':
+        if not request.json == None:
+            notifications.append(request.json)
+            return jsonify({
+                'status': 201,
+                'data': request.json
+            })
+    return jsonify({
+        'status': 200,
+        'notifications': notifications
+    })
+
+
+
+app.run(debug=True)
