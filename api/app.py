@@ -7,14 +7,26 @@ notifications = []
 def index():
     if request.method == 'POST':
         if not request.json == None:
-            notifications.append(request.json)
-            return jsonify({
-                'status': 201,
-                'data': request.json
-            })
+            if not 'title' in request.json:
+                return decorate_response(400, "Not a valid title", "")
+            if not 'description' in request.json:
+                return decorate_response(400, 'Not a valid description', "")
+
+            data = {
+                'title':        request.json['title'],
+                'description':  request.json['description']
+            }
+
+
+            notifications.append(data)
+            return decorate_response(200, 'Successfully posted notification', request.json)
+    return decorate_response(200, 'Returned all available notifications', notifications)
+
+def decorate_response(status_code, msg, data):
     return jsonify({
-        'status': 200,
-        'notifications': notifications
+        'status': status_code,
+        'msg': msg,
+        'data': data
     })
 
 
