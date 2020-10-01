@@ -1,4 +1,8 @@
 package com.tactoctical.apipushnotifications;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.tactoctical.apipushnotifications.NotificationService;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +15,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        TextView _3 = findViewById(R.id.textView3);
+        final TextView _2 = findViewById(R.id.textView2);
+        final TextView _3 = findViewById(R.id.textView3);
         _3.setText(sharedPreferences.getString("endpoint", "empty"));
 
         Button notificationButton = findViewById(R.id.notificationButton);
@@ -53,7 +59,33 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         NotificationService notificationService = new NotificationService(view.getContext());
                         notificationService.DeployNotification();
+                    }
+                }
+        );
 
+        Button requestButton = findViewById(R.id.requestButton);
+        requestButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String url = "https://api.tactoctical.com/twitch-app/token";
+
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        _2.setText("Response: " + response.toString());
+                                    }
+                                }, new Response.ErrorListener() {
+
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        // TODO: Handle error
+
+                                    }
+                                });
+                        RequestService.getInstance(view.getContext()).addToRequestQueue(jsonObjectRequest);
                     }
                 }
         );
