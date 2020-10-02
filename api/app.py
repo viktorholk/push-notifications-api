@@ -22,10 +22,21 @@ def index():
             return decorate_response(200, 'Successfully posted notification', request.json)
     return decorate_response(200, 'Returned all available notifications', notifications)
 
+@app.route('/get-latest', methods=['GET'])
+def get_latest():
+    if request.method == 'GET':
+        try:
+            _notification = notifications[-1]
+            notifications.remove(notifications[-1])
+            return decorate_response(200, 'The latest notification', _notification)
+        except:
+            return decorate_response(400, "There is no latest notifications", '')
+    return ''
+
 def decorate_response(status_code, msg, data):
     return jsonify({
         'status': status_code,
-        'msg': msg,
+        'message': msg,
         'data': data
     })
 
