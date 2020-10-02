@@ -29,6 +29,4 @@ def decorate_response(status_code, msg, data):
         'data': data
     })
 
-
-
 app.run(debug=True)
