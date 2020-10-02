@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -39,21 +40,68 @@ import java.util.TimerTask;
 
 
 public class AppService extends Service {
-    public int counter=0;
-
+    private int counter = 0;
+    public static final String CHANNEL_ID = "ForegroundServiceChannel";
+    private Thread _thread;
+    private boolean running = false;
     @Override
     public void onCreate() {
         super.onCreate();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
-            startMyOwnForeground();
+            foregroundNotification();
         else
             startForeground(1, new Notification());
     }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        running = true;
+        _thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (running){
+                    try{
+                        String url = "http://10.161.84.81:5000/";
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private void startMyOwnForeground()
-    {
-        String NOTIFICATION_CHANNEL_ID = "example.permanence";
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Log.i("response", response.toString());
+
+                                    }
+                                }, new Response.ErrorListener() {
+
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        // TODO: Handle error
+                                        Log.i("error", error.toString());
+                                    }
+                                });
+                        RequestService.getInstance(getBaseContext()).addToRequestQueue(jsonObjectRequest);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e){
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+        });
+        _thread.start();
+        return START_STICKY;
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        running = false;
+    }
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    private void foregroundNotification(){
+        String NOTIFICATION_CHANNEL_ID = "com.tactoctical.APN_NOTIFICATION_CHANNEl";
         String channelName = "Background Service";
         NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
         chan.setLightColor(Color.BLUE);
@@ -70,52 +118,5 @@ public class AppService extends Service {
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();
         startForeground(2, notification);
-    }
-
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        startTimer();
-        return START_STICKY;
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stoptimertask();
-
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("restartservice");
-        broadcastIntent.setClass(this, Restarter.class);
-        this.sendBroadcast(broadcastIntent);
-    }
-
-
-
-    private Timer timer;
-    private TimerTask timerTask;
-    public void startTimer() {
-        timer = new Timer();
-        timerTask = new TimerTask() {
-            public void run() {
-                Log.i("Count", "=========  "+ (counter++));
-            }
-        };
-        timer.schedule(timerTask, 1000, 1000); //
-    }
-
-    public void stoptimertask() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 }
