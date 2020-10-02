@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
-import android.content.Context;
 import android.app.Notification;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -18,7 +17,6 @@ import android.app.NotificationManager;
 import android.app.NotificationChannel;
 import androidx.core.app.NotificationCompat;
 import com.android.volley.toolbox.JsonObjectRequest;
-
 
 public class AppService extends Service {
     private Thread _thread;
@@ -44,9 +42,13 @@ public class AppService extends Service {
         _thread = new Thread(new Runnable() {
             @Override
             public void run() {
+
                 while (running){
                     try{
-                        String url = "http://192.168.43.85:5000/get-latest";
+                        String url = MainActivity.sharedPreferences.getString("endpoint", "");
+                        if (url.equals("")){
+                            continue;
+                        }
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 

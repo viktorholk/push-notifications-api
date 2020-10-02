@@ -1,8 +1,4 @@
 package com.tactoctical.apipushnotifications;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,28 +12,50 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.json.JSONObject;
-
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String PREFS = "Prefs";
     public static SharedPreferences sharedPreferences;
 
+    private String endpoint;
+    private TextView endpointTextView;
+    private TextView statusTextView;
+
+    private Intent AppService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        sharedPreferences   = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
 
-        String endpoint     = sharedPreferences.getString("endpoint", null);
+        endpoint            = sharedPreferences.getString("endpoint", null);
 
+        endpointTextView    = findViewById(R.id.endpointTextView);
+        statusTextView      = findViewById(R.id.statusTextView);
+
+        AppService = new Intent(this, AppService.class);
+
+        // If no endpoint is cached in settings change activity
         if (endpoint == null){
             Intent intent = new Intent(this, OptionsActivity.class);
             startActivity(intent);
         }
+        // Update text views
+        endpointTextView.setText(endpoint);
 
+        if (isServiceRunning(AppService.class)){
+            statusTextView.setText("Running");
+            statusTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
+        }else{
+            statusTextView.setText("Stopped");
+            statusTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
+
+        // Buttons
+        // Options button
         Button optionsButton = findViewById(R.id.optionsButton);
         optionsButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -48,57 +66,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        final TextView _2 = findViewById(R.id.textView2);
-        final TextView _3 = findViewById(R.id.textView3);
-        _3.setText(sharedPreferences.getString("endpoint", "empty"));
-
-        Button notificationButton = findViewById(R.id.notificationButton);
-        notificationButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                }
-        );
-
-        Button requestButton = findViewById(R.id.requestButton);
-        requestButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String url = "https://api.tactoctical.com/twitch-app/token";
-
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        _2.setText("Response: " + response.toString());
-                                    }
-                                }, new Response.ErrorListener() {
-
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        // TODO: Handle error
-
-                                    }
-                                });
-                        RequestService.getInstance(view.getContext()).addToRequestQueue(jsonObjectRequest);
-                    }
-                }
-        );
-        final Intent intent = new Intent(this, AppService.class);
-
-        final TextView serviceStatus = findViewById(R.id.serviceStatus);
 
         Button startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Start service
-                startService(intent);
-                serviceStatus.setText("Running");
+                startService(AppService);
+                statusTextView.setText("Running");
+                statusTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
             }
         });
 
@@ -106,19 +82,13 @@ public class MainActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopService(intent);
-                serviceStatus.setText("Stopped");
+                stopService(AppService);
+                statusTextView.setText("Stopped");
+                statusTextView.setTextColor(getResources().getColor(R.color.colorAccent));
             }
         });
-
-        if (isServiceRunning(AppService.class)){
-            serviceStatus.setText("Running");
-        }
-        else{
-            serviceStatus.setText("Stopped");
-        }
-
     }
+
 
     private boolean isServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
