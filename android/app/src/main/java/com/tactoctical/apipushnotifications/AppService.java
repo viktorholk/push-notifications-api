@@ -1,52 +1,38 @@
 package com.tactoctical.apipushnotifications;
-
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Binder;
 import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
-import android.widget.Toast;
+import android.os.IBinder;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
+import org.json.JSONException;
+import org.json.JSONObject;
+import android.app.Service;
+import android.content.Intent;
+import android.graphics.Color;
+import android.content.Context;
+import android.app.Notification;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import androidx.annotation.Nullable;
 import com.android.volley.VolleyError;
+import android.app.NotificationManager;
+import android.app.NotificationChannel;
+import androidx.core.app.NotificationCompat;
 import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONObject;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class AppService extends Service {
-    private int counter = 0;
-    public static final String CHANNEL_ID = "ForegroundServiceChannel";
     private Thread _thread;
     private boolean running = false;
+
+    private String notificationChannelIdForeground  = "com.tactoctical.APN_FOREGROUND";
+    private String notificationChannelIdAPI         = "com.tactoctical.APN_NOTIFICATION_CHANNEl";
+    private NotificationManager notificationManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        notificationManager = getSystemService(NotificationManager.class);
+
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
             foregroundNotification();
         else
@@ -60,21 +46,28 @@ public class AppService extends Service {
             public void run() {
                 while (running){
                     try{
-                        String url = "http://10.161.84.81:5000/";
-
+                        String url = "http://192.168.43.85:5000/get-latest";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        Log.i("response", response.toString());
+                                        try{
+                                            int code = response.getInt("status");
+                                            if (code == 200){
+                                                String title        = response.getJSONObject("data").getString("title");
+                                                String description  = response.getJSONObject("data").getString("description");
+                                                apiNotification(title,description);
+                                            }
 
+                                        } catch (JSONException e){
+                                            Log.i("Error", e.toString());
+                                        }
                                     }
                                 }, new Response.ErrorListener() {
 
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        // TODO: Handle error
                                         Log.i("error", error.toString());
                                     }
                                 });
@@ -89,11 +82,13 @@ public class AppService extends Service {
         _thread.start();
         return START_STICKY;
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         running = false;
     }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -101,22 +96,34 @@ public class AppService extends Service {
     }
 
     private void foregroundNotification(){
-        String NOTIFICATION_CHANNEL_ID = "com.tactoctical.APN_NOTIFICATION_CHANNEl";
-        String channelName = "Background Service";
-        NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+        NotificationChannel chan = new NotificationChannel(notificationChannelIdForeground, "Foreground Service", NotificationManager.IMPORTANCE_NONE);
         chan.setLightColor(Color.BLUE);
         chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
 
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        assert manager != null;
-        manager.createNotificationChannel(chan);
+        notificationManager.createNotificationChannel(chan);
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, notificationChannelIdForeground);
         Notification notification = notificationBuilder.setOngoing(true)
                 .setContentTitle("App is running in background")
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();
         startForeground(2, notification);
+    }
+
+    private void apiNotification(String title, String description){
+        NotificationChannel channel = new NotificationChannel(notificationChannelIdAPI, "Push Notifications", NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription("Channel for all APN API notifications");
+
+        notificationManager.createNotificationChannel(channel);
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, notificationChannelIdAPI)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(description)
+                .setPriority(NotificationCompat.DEFAULT_ALL);
+
+        notificationManager.notify(1, builder.build());
     }
 }
