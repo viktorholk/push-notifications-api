@@ -3,9 +3,12 @@ package com.tactoctical.apipushnotifications;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
@@ -83,6 +86,10 @@ public class AppService extends Service {
         super.onDestroy();
         stoptimertask();
 
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("restartservice");
+        broadcastIntent.setClass(this, Restarter.class);
+        this.sendBroadcast(broadcastIntent);
     }
 
 
@@ -93,25 +100,7 @@ public class AppService extends Service {
         timer = new Timer();
         timerTask = new TimerTask() {
             public void run() {
-                String url = "https://api.tactoctical.com/twitch-app/token";
-
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                        (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.i("response", response.toString());
-
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO: Handle error
-
-                            }
-                        });
-                RequestService.getInstance(getBaseContext()).addToRequestQueue(jsonObjectRequest);
+                Log.i("Count", "=========  "+ (counter++));
             }
         };
         timer.schedule(timerTask, 1000, 1000); //

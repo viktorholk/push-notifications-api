@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Start service
-                startForegroundService(intent);
+                startService(intent);
                 serviceStatus.setText("Running");
             }
         });
