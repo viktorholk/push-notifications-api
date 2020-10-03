@@ -10,7 +10,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView statusTextView;
 
     private Intent AppService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
             statusTextView.setText("Stopped");
             statusTextView.setTextColor(getResources().getColor(R.color.colorAccent));
         }
+
+
 
         // Buttons
         // Options button

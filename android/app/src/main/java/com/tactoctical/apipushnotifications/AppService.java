@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import com.android.volley.VolleyError;
 import android.app.NotificationManager;
 import android.app.NotificationChannel;
+import android.widget.Toast;
+
 import androidx.core.app.NotificationCompat;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -63,14 +65,14 @@ public class AppService extends Service {
                                             }
 
                                         } catch (JSONException e){
-                                            Log.i("Error", e.toString());
+                                            Toast.makeText(AppService.this, e.toString(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 }, new Response.ErrorListener() {
 
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        Log.i("error", error.toString());
+                                        Toast.makeText(AppService.this, error.toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                         RequestService.getInstance(getBaseContext()).addToRequestQueue(jsonObjectRequest);

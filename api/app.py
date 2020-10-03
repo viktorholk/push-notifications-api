@@ -20,6 +20,9 @@ def index():
 
             notifications.append(data)
             return decorate_response(200, 'Successfully posted notification', request.json)
+        else:
+            return decorate_response(400, 'Bad request', '')
+
 
     elif request.method == 'GET':
         try:
