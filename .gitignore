@@ -1,6 +1,15 @@
 
 # Created by https://www.toptal.com/developers/gitignore/api/android,androidstudio,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=android,androidstudio,python
+android/*.iml
+android/.gradle
+android/local.properties
+android/.idea/
+android/.DS_Store
+android/build
+android/captures
+android/.externalNativeBuild
+
 
 ### Android ###
 # Built application files
