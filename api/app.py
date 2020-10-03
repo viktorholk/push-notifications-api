@@ -20,14 +20,14 @@ def index():
 
             notifications.append(data)
             return decorate_response(200, 'Successfully posted notification', request.json)
-            
+
     elif request.method == 'GET':
         try:
             _notification = notifications[-1]
             notifications.remove(notifications[-1])
             return decorate_response(200, 'The latest notification', _notification)
         except:
-            return decorate_response(400, "There is no latest notifications", '')
+            return decorate_response(400, "There is new notification", '')
     return ''
 
 
