@@ -8,10 +8,10 @@ def index():
     if request.method == 'POST':
         if not request.json == None:
             if not 'title' in request.json:
-                return decorate_response(400, "Not a valid title", "")
+                return decorate_response(400, "Title was not found", "")
 
             if not 'text' in request.json:
-                return decorate_response(400, 'Not a valid text', "")
+                return decorate_response(400, 'Text was not found', "")
 
             data = {
                 'title':        request.json['title'],
