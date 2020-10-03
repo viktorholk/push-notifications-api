@@ -60,8 +60,8 @@ public class AppService extends Service {
                                             int code = response.getInt("status");
                                             if (code == 200){
                                                 String title        = response.getJSONObject("data").getString("title");
-                                                String description  = response.getJSONObject("data").getString("description");
-                                                apiNotification(title,description);
+                                                String text         = response.getJSONObject("data").getString("text");
+                                                apiNotification(title, text);
                                             }
 
                                         } catch (JSONException e){
@@ -115,7 +115,7 @@ public class AppService extends Service {
         startForeground(2, notification);
     }
 
-    private void apiNotification(String title, String description){
+    private void apiNotification(String title, String text){
         NotificationChannel channel = new NotificationChannel(notificationChannelIdAPI, "Push Notifications", NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription("Channel for all APN API notifications");
 
@@ -125,7 +125,8 @@ public class AppService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, notificationChannelIdAPI)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(title)
-                .setContentText(description)
+                .setStyle(new NotificationCompat.BigTextStyle())
+                .setContentText(text)
                 .setPriority(NotificationCompat.DEFAULT_ALL);
 
         notificationManager.notify(1, builder.build());

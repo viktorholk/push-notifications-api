@@ -9,12 +9,13 @@ def index():
         if not request.json == None:
             if not 'title' in request.json:
                 return decorate_response(400, "Not a valid title", "")
-            if not 'description' in request.json:
-                return decorate_response(400, 'Not a valid description', "")
+
+            if not 'text' in request.json:
+                return decorate_response(400, 'Not a valid text', "")
 
             data = {
                 'title':        request.json['title'],
-                'description':  request.json['description']
+                'text':         request.json['text']
             }
 
 
