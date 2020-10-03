@@ -1,4 +1,4 @@
-package com.tactoctical.apipushnotifications;
+package com.viktorholk.apipushnotifications;
 
 import android.content.Context;
 

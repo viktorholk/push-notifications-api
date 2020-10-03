@@ -1,6 +1,5 @@
-package com.tactoctical.apipushnotifications;
+package com.viktorholk.apipushnotifications;
 import android.os.Build;
-import android.util.Log;
 import android.os.IBinder;
 
 import org.json.JSONException;
@@ -12,6 +11,8 @@ import android.app.Notification;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import androidx.annotation.Nullable;
+
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import android.app.NotificationManager;
 import android.app.NotificationChannel;
@@ -75,8 +76,9 @@ public class AppService extends Service {
                                         Toast.makeText(AppService.this, error.toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
+
                         RequestService.getInstance(getBaseContext()).addToRequestQueue(jsonObjectRequest);
-                        Thread.sleep(1000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e){
                         Thread.currentThread().interrupt();
                     }
@@ -108,7 +110,6 @@ public class AppService extends Service {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, notificationChannelIdForeground);
         Notification notification = notificationBuilder.setOngoing(true)
-                .setContentTitle("App is running in background")
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();
@@ -123,11 +124,12 @@ public class AppService extends Service {
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, notificationChannelIdAPI)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle())
                 .setContentText(text)
-                .setPriority(NotificationCompat.DEFAULT_ALL);
+                .setPriority(NotificationCompat.DEFAULT_ALL)
+                .setColor(getResources().getColor(R.color.colorPrimary));
 
         notificationManager.notify(1, builder.build());
     }

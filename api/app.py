@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 notifications = []
-
+port = 5000
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -17,7 +17,6 @@ def index():
                 'title':        request.json['title'],
                 'text':         request.json['text']
             }
-
 
             notifications.append(data)
             return decorate_response(200, 'Successfully posted notification', request.json)
@@ -42,4 +41,4 @@ def decorate_response(status_code, msg, data):
         'data': data
     })
 
-app.run(debug=True, host="0.0.0.0")
+app.run(debug=True, host="0.0.0.0", port=port)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tactoctical.apipushnotifications">
+    package="com.viktorholk.apipushnotifications">
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,13 +13,13 @@
         android:theme="@style/AppTheme"
         android:networkSecurityConfig="@xml/network_security_config">
         <service
-            android:name=".AppService"
+            android:name="com.viktorholk.apipushnotifications.AppService"
             android:enabled="true"
             android:exported="false"/>
 
-        <activity android:name=".OptionsActivity"
+        <activity android:name="com.viktorholk.apipushnotifications.OptionsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".MainActivity"
+        <activity android:name="com.viktorholk.apipushnotifications.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
