@@ -1,5 +1,5 @@
 ## API Push Notifications
-Send mobile push notifications through your own hosted api
+Send mobile push notifications through your a REST API.<br>
 There is currently only being developed on the android app.<br>
 
 
