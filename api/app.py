@@ -30,10 +30,10 @@ else:
             if not request.json == None:
                 # Check if the post request is valid
                 if not 'title' in request.json:
-                    return response(400, "Title was not found", {})
+                    return response(400, "Title was not found")
 
                 if not 'body' in request.json:
-                    return response(400, 'Body was not found', {})
+                    return response(400, 'Body was not found')
 
                 # Create the data from the request
                 data = {
@@ -42,9 +42,9 @@ else:
                 }
                 print(f'Created notification\n{data}')
                 notifications.append(data)
-                return response(200, 'Successfully created notification', request.json)
+                return response(201, 'Successfully created notification', request.json)
             else:
-                return response(400, 'Bad request', {})
+                return response(400, 'Bad request')
 
         elif request.method == 'GET':
             if len(notifications) > 0:
@@ -55,16 +55,28 @@ else:
                 # Return the latest notification
                 return response(200, 'Polled last notification', latest_notification)
             else:
-                return response(404, 'There is currently no notifications', {})
+                return response(200, 'There is currently no notifications')
 
-        return response(400, "Bad request", {})    
+    @app.errorhandler(400)
+    def bad_request(error):
+        return response(400, "Bad request")
 
-    def response(status, message, data):
-        return jsonify({
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return response(404, "The requested URL was not found on the server")
+
+    def response(status, message, data = None):
+        # Create the response object
+        response_data = {
             'status': status,
             'message': message,
-            'data': data
-        })
+        }
+        # Add the data to the response if there is any
+        if data:
+            response_data['data'] = data
+        
+        # return the data with the statuscode
+        return jsonify(response_data), status
 
     # Run the application
     app.run(debug=config.getboolean('app', 'debug'), host=config['app']['host'], port=config.getint('app', 'port'))
