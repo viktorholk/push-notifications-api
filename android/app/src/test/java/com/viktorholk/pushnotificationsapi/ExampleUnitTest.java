@@ -1,4 +1,4 @@
-package com.viktorholk.apipushnotifications;
+package com.viktorholk.pushnotificationsapi;
 
 import org.junit.Test;
 
