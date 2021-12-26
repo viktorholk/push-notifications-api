@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">API Push Notifications</string>
-    <string name="channel_name">api_push_notifications</string>
-    <string name="channel_description">Channel for APN</string>
+    <string name="app_name">Push Notifications API</string>
+    <string name="sharedPreferences">APN Shared Preferences</string>
 </resources>

@@ -1,7 +1,6 @@
-package com.viktorholk.apipushnotifications;
+package com.viktorholk.pushnotificationsapi;
 
 import android.content.Context;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -33,6 +32,5 @@ public class RequestService {
     public <T> void addToRequestQueue(Request<T> req){
         getRequestQueue().add((req));
     }
-
 
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ConfigurationFragment"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Configuraton"
+        />
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/urlEditText"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:hint="URL"
+            android:inputType="text"
+            android:minEms="20"
+            android:textSize="11sp"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pollTimeButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EDIT POLL TIME"
+        android:textSize="15sp" />
+    <TextView
+        android:id="@+id/pollTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="11sp"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/applyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="APPLY"
+        android:textSize="20sp"
+        app:icon="@drawable/ic_done_black_24dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+
+
+
+</LinearLayout>
