@@ -23,7 +23,7 @@
             android:id="@+id/urlEditText"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
-            android:hint="URL"
+            android:hint="API Notifications Endpoint"
             android:inputType="text"
             android:minEms="20"
             android:textSize="11sp"
