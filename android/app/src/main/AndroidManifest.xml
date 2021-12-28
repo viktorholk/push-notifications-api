@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.viktorholk.pushnotificationsapi">
+    package="com.viktorholk.apipushnotifications">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -11,11 +11,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PushNotificationsAPI"
+        android:theme="@style/Theme.APIPushNotifications"
         android:usesCleartextTraffic="true">
-
         <service
-            android:name="com.viktorholk.pushnotificationsapi.NotificationService"
+            android:name="com.viktorholk.apipushnotifications.NotificationService"
             android:enabled="true"
             android:exported="false"/>
 
@@ -29,5 +28,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

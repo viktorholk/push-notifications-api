@@ -1,4 +1,4 @@
-package com.viktorholk.pushnotificationsapi;
+package com.viktorholk.apipushnotifications;
 
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;

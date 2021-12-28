@@ -11,6 +11,9 @@ android/captures
 android/.externalNativeBuild
 
 
+# intelij
+.idea
+
 ### Android ###
 # Built application files
 *.apk
