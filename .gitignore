@@ -10,9 +10,10 @@ android/build
 android/captures
 android/.externalNativeBuild
 
+## Custom ignores
 
-# intelij
 .idea
+android/app/release
 
 ### Android ###
 # Built application files
