@@ -16,8 +16,8 @@ The application  is great for IoT (Internet of Things). You could for example po
 You can download the Android app through [Google Play](https://play.google.com/store/apps/details?id=com.viktorholk.apipushnotifications) or download the latest apk from the [releases](https://github.com/viktorholk/push-notifications-api/releases).
 # Usage
 <p align="center">
-<img src="https://i.imgur.com/EiZ3eQO.png" width=256 align="center">
-<img src="https://i.imgur.com/uvD8hGJ.png" width=256 align="center">
+<img src="https://i.imgur.com/bUojChY.png" width=256 align="center">
+<img src="https://i.imgur.com/ApgZyKL.png" width=256 align="center">
 </p>
 
 * Configuration  
