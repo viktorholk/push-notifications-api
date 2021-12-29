@@ -10,6 +10,6 @@
         android:id="@+id/service"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:iconTint="@color/blue"
-        android:title="Service"
+        android:title="Push Notifications"
         />
 </menu>

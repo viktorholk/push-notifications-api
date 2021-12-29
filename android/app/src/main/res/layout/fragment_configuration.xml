@@ -8,22 +8,32 @@
     android:gravity="center"
     android:orientation="vertical">
 
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:srcCompat="@drawable/ic_settings_black_24dp"
+        android:tint="@color/blue"
+
+        />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Configuraton"
+        android:text="Configuration"
+        android:textStyle="bold"
         />
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-        >
+        android:layout_marginTop="15dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/urlEditText"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
-            android:hint="API Notifications Endpoint"
+            android:hint="Notifications Endpoint"
             android:inputType="text"
             android:minEms="20"
             android:textSize="11sp"
@@ -41,7 +51,7 @@
         android:id="@+id/pollTimeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="Poll time in x hours and x minutes"
         android:textSize="11sp"
         />
 

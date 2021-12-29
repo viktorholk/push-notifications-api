@@ -20,10 +20,12 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Push Notifications Service"
+            android:text="Push Notifications"
+            android:textStyle="bold"
             />
 
 
@@ -32,14 +34,12 @@
             android:layout_width="75dp"
             android:layout_height="75dp"
             app:srcCompat="@drawable/ic_close_black_24dp"
-            android:tint="@color/red"
             />
         <TextView
             android:id="@+id/serviceStateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/red"
-            android:text="Running"
+            android:text="service state"
             />
 
         <com.google.android.material.button.MaterialButton

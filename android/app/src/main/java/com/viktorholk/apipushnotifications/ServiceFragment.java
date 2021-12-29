@@ -52,7 +52,7 @@ public class ServiceFragment extends Fragment {
             serviceIcon.setImageResource(R.drawable.ic_play_arrow_black_24dp);
             serviceIcon.setColorFilter(ContextCompat.getColor(context, R.color.blue));
             // Text
-            stateTextView.setText("Running");
+            stateTextView.setText("Service running");
             stateTextView.setTextColor(ContextCompat.getColor(context, R.color.blue));
 
             // button
@@ -61,10 +61,10 @@ public class ServiceFragment extends Fragment {
         } else {
             // Icon
             serviceIcon.setImageResource(R.drawable.ic_close_black_24dp);
-            serviceIcon.setColorFilter(ContextCompat.getColor(context, R.color.blue));
+            serviceIcon.setColorFilter(ContextCompat.getColor(context, R.color.red));
             // Text
-            stateTextView.setText("Stopped");
-            stateTextView.setTextColor(ContextCompat.getColor(context, R.color.blue));
+            stateTextView.setText("Service stopped");
+            stateTextView.setTextColor(ContextCompat.getColor(context, R.color.red));
 
             // Button
             serviceToggleButton.setIcon(ContextCompat.getDrawable(context, R.drawable.ic_done_black_24dp));
