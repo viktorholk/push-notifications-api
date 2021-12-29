@@ -3,8 +3,6 @@ package com.viktorholk.apipushnotifications;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,7 +87,7 @@ public class ConfigurationFragment extends Fragment {
         pollTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                picker.show(MainActivity.fragmentManager, "picker");
+                if (!picker.isAdded()) picker.show(MainActivity.fragmentManager, "picker");
             }
         });
 
