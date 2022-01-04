@@ -5,7 +5,7 @@
 <p align="center">
 <b>Push Notifications API</b>
 <br>
-Version: <b>1.1.0</b>
+Version: <b>1.1.1</b>
 </p>
 
 # About

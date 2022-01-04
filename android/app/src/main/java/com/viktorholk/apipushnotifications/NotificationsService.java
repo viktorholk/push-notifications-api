@@ -7,36 +7,25 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
-
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.Objects;
 
-public class NotificationService extends Service {
+public class NotificationsService extends Service {
     private Boolean running = false;
     private NotificationManager notificationManager;
+
+    private Intent serviceFragmentBroadcast = new Intent();
 
     private Notification getForegroundNotification(){
         // Create the notification channel
@@ -74,19 +63,29 @@ public class NotificationService extends Service {
                 .build();
     }
 
+    private void broadcast(String error) {
+
+        // if the error is null send a empty broadcast
+        if (!Objects.isNull(error)) {
+            serviceFragmentBroadcast.putExtra("error", error);
+            Log.i("Notification Service Broadcast", error);
+        }
+        sendBroadcast(serviceFragmentBroadcast);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         notificationManager = getSystemService(NotificationManager.class);
         // Start the foreground notification
         startForeground(1, getForegroundNotification());
+
+        // Set the serviceFragmentBroadcastIntent's action
+        serviceFragmentBroadcast.setAction("serviceFragmentBroadcast");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Broadcast Intent
-        Intent broadcastIntent = new Intent().setAction("broadcastServiceError");
-
         running = true;
         Thread _thread = new Thread(new Runnable() {
             @Override
@@ -105,9 +104,10 @@ public class NotificationService extends Service {
                                     if (response.has("data")) {
                                         String title = response.getJSONObject("data").getString("title");
                                         String body = response.getJSONObject("data").getString("body");
-                                        // broadcast empty error message to service fragment (to remove previous error message - if there was any)
-                                        broadcastIntent.putExtra("message", "");
-                                        sendBroadcast(broadcastIntent);
+
+                                        // Send empty broadcast
+                                        // This tells the service fragment to clear the error messages - if there is any
+                                        broadcast(null);
 
                                         // Each notification has to have a unique id so we dont overwrite it
                                         // We track the notificaitons the the shared preferences
@@ -122,19 +122,17 @@ public class NotificationService extends Service {
                                         notificationManager.notify(notificationNumber, getNotification(title, body));
                                     }
                                 } catch (JSONException error) {
-                                    broadcastIntent.putExtra("message", error.toString());
-                                    sendBroadcast(broadcastIntent);
+                                    broadcast(error.toString());
                                 }
                             }
                         }, new Response.ErrorListener() {
                             @SuppressLint("DefaultLocale")
                             @Override
                             public void onErrorResponse(VolleyError error) {
-
                                 // Check whether or not it is a Java Volley error or the response
                                 if (Objects.isNull(error.networkResponse)) {
                                     // Volley error
-                                    broadcastIntent.putExtra("message", String.format("%s", error.toString()));
+                                    broadcast(error.toString());
                                 } else {
                                     final int errorCode = error.networkResponse.statusCode;
                                     final String errorMessage = error.toString();
@@ -142,15 +140,13 @@ public class NotificationService extends Service {
                                     try {
                                         final String responseBody = new String(error.networkResponse.data, "utf-8");
                                         JSONObject jsonData = new JSONObject(responseBody);
-                                        Log.i("UnsupportedEncodingException | JSONException", jsonData.toString());
-                                        // Add the broadcastIntent extra
-                                        broadcastIntent.putExtra("message", String.format("STATUS: %d%n%s%n%s", errorCode, errorMessage, jsonData.toString()));
+                                        broadcast(String.format("STATUS: %d%n%s%n%s", errorCode, errorMessage, jsonData.toString()));
 
-                                    } catch (UnsupportedEncodingException | JSONException e) {
-                                        Log.i("UnsupportedEncodingException | JSONException", error.toString());
+                                    } catch (UnsupportedEncodingException | JSONException _error) {
+                                        broadcast(String.format("UnsupportedEncodingException | JSONException %s", _error.toString()));
                                     }
                                 }
-                                sendBroadcast(broadcastIntent);
+                                // Stop the service so the user can fix the API error
                                 stopSelf();
                             }
                         });
@@ -165,8 +161,7 @@ public class NotificationService extends Service {
                         Thread.sleep(sleepTime);
 
                     } catch (InterruptedException error) {
-                        broadcastIntent.putExtra("message", error.toString());
-                        sendBroadcast(broadcastIntent);
+                        broadcast(error.toString());
                     }
                 }
             }

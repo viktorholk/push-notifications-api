@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,11 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.material.button.MaterialButton;
-
-import org.w3c.dom.Text;
-
 import java.util.Objects;
 
 public class ServiceFragment extends Fragment {
@@ -80,35 +75,38 @@ public class ServiceFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Create the indent from the NotificatonService class
-        notificatonsService = new Intent(getActivity(), NotificationService.class);
+        notificatonsService = new Intent(getActivity(), NotificationsService.class);
 
         // Register the receiver from the service
         // To update the status message whether it is an error or success message.
         getActivity().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                final String errorMessage = intent.getStringExtra("message");
-                // Update the TextView
-                serviceErrorTextView.setText(errorMessage);
+                // Clear the textview by default
+                serviceErrorTextView.setText("");
 
-                // Toggle the service view since it has been stopped
-                // If the errorMessage is empty it is a broadcast from onResponse, so no error // Dont toggleTheServiceView
-                if (errorMessage.length() > 0) toggleServiceView(context, false);
+                // If there is a error set the text and toggle the service view
+                final String error = intent.getStringExtra("error");
+                if (!Objects.isNull(error)) {
+                    // update the text and toast the user
+                    serviceErrorTextView.setText(error);
+                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+                    toggleServiceView(context, false);
+                }
             }
-        }, new IntentFilter("broadcastServiceError"));
+        }, new IntentFilter("serviceFragmentBroadcast"));
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         serviceErrorTextView    = view.findViewById(R.id.serviceErrorTextView);
-        serviceIcon         = view.findViewById(R.id.serviceIconImageView);
-        stateTextView       = view.findViewById(R.id.serviceStateTextView);
-        serviceToggleButton = view.findViewById(R.id.serviceToggleButton);
+        serviceIcon             = view.findViewById(R.id.serviceIconImageView);
+        stateTextView           = view.findViewById(R.id.serviceStateTextView);
+        serviceToggleButton     = view.findViewById(R.id.serviceToggleButton);
 
-        if (isServiceRunning(NotificationService.class)) {
+        if (isServiceRunning(NotificationsService.class)) {
             toggleServiceView(getContext(), true);
         } else {
             toggleServiceView(getContext(), false);
@@ -118,13 +116,16 @@ public class ServiceFragment extends Fragment {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(getActivity(), Boolean.toString(isServiceRunning(NotificationService.class)), Toast.LENGTH_SHORT).show();
-                if (isServiceRunning(NotificationService.class)) {
+                if (isServiceRunning(NotificationsService.class)) {
                     // Stop the service
-                    getActivity().stopService(new Intent(getActivity(), NotificationService.class));
+                    getActivity().stopService(new Intent(getActivity(), NotificationsService.class));
                     toggleServiceView(getContext(), false);
                 } else {
+                    // Clear the previous error message
+                    serviceErrorTextView.setText("");
+
                     // Start the service
-                    getActivity().startService(new Intent(getActivity(), NotificationService.class));
+                    getActivity().startService(new Intent(getActivity(), NotificationsService.class));
                     toggleServiceView(getContext(), true);
                 }
             }

@@ -14,7 +14,7 @@
         android:theme="@style/Theme.APIPushNotifications"
         android:usesCleartextTraffic="true">
         <service
-            android:name="com.viktorholk.apipushnotifications.NotificationService"
+            android:name="com.viktorholk.apipushnotifications.NotificationsService"
             android:enabled="true"
             android:exported="false"/>
 
