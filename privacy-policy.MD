@@ -8,6 +8,4 @@ We encourage you to review the source code and contribute to the development of 
 
 We may use third-party services for analytics and performance monitoring to help us improve the app's functionality and provide a better user experience. However, these services do not collect any personal information about you or your device.
 
-Please note that the third-party API that we use to poll notifications may collect personal information about you, such as your name, email address, or other data. We do not have control over how this third-party API collects, uses, or stores your personal information. Therefore, we recommend that you review the privacy policy of the third-party API before using our app.
-
 We may update this privacy policy from time to time. Any changes to this policy will be reflected on this page, and we encourage you to review this policy periodically.
