@@ -138,12 +138,13 @@ public class NotificationsService extends Service {
                                     final String errorMessage = error.toString();
                                     // Parse the data from the API
                                     try {
-                                        final String responseBody = new String(error.networkResponse.data, "utf-8");
-                                        JSONObject jsonData = new JSONObject(responseBody);
-                                        broadcast(String.format("STATUS: %d%n%s%n%s", errorCode, errorMessage, jsonData.toString()));
+                                        final String networkResponseData = new String(error.networkResponse.data, "utf-8");
+                                        final String responseBody = networkResponseData.isEmpty() ? "{}" : networkResponseData;
 
-                                    } catch (UnsupportedEncodingException | JSONException _error) {
-                                        broadcast(String.format("UnsupportedEncodingException | JSONException %s", _error.toString()));
+                                        JSONObject jsonData = new JSONObject(responseBody);
+                                        broadcast(String.format("STATUS: %d%n%s%n%s", errorCode, errorMessage, jsonData));
+                                    } catch (Exception exception){
+                                        broadcast(String.format("%s", exception));
                                     }
                                 }
                                 // Stop the service so the user can fix the API error
