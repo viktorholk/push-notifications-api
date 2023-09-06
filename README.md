@@ -27,6 +27,18 @@ You can download the Android app through [Google Play](https://play.google.com/s
 - Service  
   In the service tab, you can toggle the notification service.
 
+# Creating a notification
+````
+curl --request POST \
+  --url http://xxx.xxx.xxx.xxx:5000/ \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "title": "Here is a cool title",
+  "body": "Here are some body text for the notification"
+}'
+````
+
+
 ## Issues
 
 Please report issues using [GitHub's issues tab](https://github.com/viktorholk/push-notifications-api/issues).
