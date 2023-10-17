@@ -38,19 +38,20 @@ The app will by default run on port 5000 and the endpoint for the notifications 
 
 This can be changed in the ``config.ini`` file
 ## Create a Notification
-````
-curl '127.0.0.1:5000' \
---header 'Content-Type: application/json' \
---data '{
-    "title": "Your Title Goes Here",
-    "body": "Your description goes here"
-}'
-````
-## Poll the Latest Notification
-
-````
-curl '127.0.0.1:5000'
-````
+> ### Example using [curl](https://curl.se/)
+> ````
+> curl '127.0.0.1:5000' \
+> --header 'Content-Type: application/json' \
+> --data '{
+>    "title": "Your Title Goes Here",
+>     "body": "Your description goes here"
+> }'
+> ````
+> ## Poll the Latest Notification
+> 
+> ````
+> curl '127.0.0.1:5000'
+> ````
 ## Issues
 
 Please report issues using [GitHub's issues tab](https://github.com/viktorholk/push-notifications-api/issues).
