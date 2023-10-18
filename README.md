@@ -9,7 +9,7 @@
 # About
 
 Push Notifications API is a simple Android app for displaying notifications on your phone through a REST-API.  
-It is a tool for developers that need a easy way to post notifications on their phone. The application requires an API to handle all the notifications. There is a working example of a Python REST-API in the [api](https://github.com/viktorholk/push-notifications-api/tree/main/api) folder that works with the Android app. You can customize the API to your liking.  
+It is a tool for developers that need a easy way to post notifications to their phone. The application requires an API to handle all the notifications. There is a working example of a Python REST-API in the [api](https://github.com/viktorholk/push-notifications-api/tree/main/api) folder that works with the Android app. You can customize the API to your liking.  
 
 The application is great for IoT (Internet of Things). You could for example post a notification to your phone every time your garden needs watering when a sensor has detected the level of soil moisture to be low. The possibilites are up to you!
 
