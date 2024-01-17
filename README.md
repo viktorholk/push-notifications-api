@@ -48,7 +48,7 @@ This can be changed in the ``config.ini`` file
 >     "body": "Your description goes here"
 > }'
 > ````
-> ## Poll the Latest Notification
+## Poll the Latest Notification
 > 
 > ````
 > curl '127.0.0.1:5000'
