@@ -44,14 +44,36 @@ This can be changed in the ``config.ini`` file
 > curl '127.0.0.1:5000' \
 > --header 'Content-Type: application/json' \
 > --data '{
->    "title": "Your Title Goes Here",
->     "body": "Your description goes here"
+>    "title": "Foo Bar Baz!",
+>     "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 > }'
+> ````
+> #### Response
+> ````
+>{
+>    "status": 201,
+>    "message": "Successfully created notification",
+>    "data": {
+>        "title": "Foo Bar Baz!",
+>        "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+>    }
+>}
 > ````
 ## Poll the Latest Notification
 > 
 > ````
 > curl '127.0.0.1:5000'
+> ````
+> #### Response
+> ````
+>{
+>    "status": 200,
+>    "message": "Polled last notification",
+>    "data": {
+>        "title": "Foo Bar Baz!",
+>        "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+>    }
+>}
 > ````
 ## Issues
 
