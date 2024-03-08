@@ -75,6 +75,13 @@ This can be changed in the ``config.ini`` file
 >    }
 >}
 > ````
+
+## Roadmap
+
+- App Logging
+- Webhook notifications
+
+
 ## Issues
 
 Please report issues using [GitHub's issues tab](https://github.com/viktorholk/push-notifications-api/issues).
