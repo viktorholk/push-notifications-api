@@ -4,9 +4,6 @@ from configparser import ConfigParser
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-# I just prefer that the data attribute comes after the status and message in the response 	⊂(◉‿◉)つ
-app.json.sort_keys = False
-
 
 # Setup the config and make sure the file is present
 CONFIG_FILE = 'config.ini'
