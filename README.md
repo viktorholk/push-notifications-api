@@ -79,7 +79,7 @@ This can be changed in the ``config.ini`` file
 ## Roadmap
 
 - App Logging
-- Webhook notifications
+- Instant Notifications
 
 
 ## Issues
