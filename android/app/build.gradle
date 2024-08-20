@@ -3,14 +3,14 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.viktorholk.apipushnotifications"
         minSdk 26
-        targetSdk 33
-        versionCode 5
-        versionName "1.1.3"
+        targetSdk 35
+        versionCode 6
+        versionName "1.1.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -25,6 +25,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'com.viktorholk.apipushnotifications'
 }
 
 dependencies {
