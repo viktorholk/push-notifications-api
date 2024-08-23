@@ -23,37 +23,31 @@
         android:text="Configuration"
         android:textStyle="bold"
         />
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/urlEditText"
-            android:layout_width="240dp"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Notifications Endpoint"
-            android:inputType="text"
-            android:minEms="20"
-            android:textSize="11sp"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="URL"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/pollTimeButton"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="EDIT POLL TIME"
-        android:textSize="15sp" />
-    <TextView
-        android:id="@+id/pollTimeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Poll time in x hours and x minutes"
-        android:textSize="11sp"
-        />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/urlEditText"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:minEms="20"
+                android:textSize="11sp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/applyButton"
@@ -64,8 +58,5 @@
         android:textSize="20sp"
         app:icon="@drawable/ic_done_black_24dp"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
-
-
 
 </LinearLayout>

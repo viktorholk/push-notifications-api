@@ -6,14 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ServiceFragment"
 >
-    <TextView
-        android:id="@+id/serviceErrorTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="@color/red"
-        android:textSize="11sp"
-        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Push Notifications"
+            android:text="Notification Service"
             android:textStyle="bold"
             />
 
@@ -35,12 +27,7 @@
             android:layout_height="75dp"
             app:srcCompat="@drawable/ic_close_black_24dp"
             />
-        <TextView
-            android:id="@+id/serviceStateTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="service state"
-            />
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/serviceToggleButton"
@@ -51,6 +38,16 @@
             android:textSize="20sp"
             app:icon="@drawable/ic_done_black_24dp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+        <TextView
+            android:id="@+id/serviceMessageTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="11sp"
+            android:gravity="center"
+            />
+
 
     </LinearLayout>
 </FrameLayout>

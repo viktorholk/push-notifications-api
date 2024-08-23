@@ -1,0 +1,8 @@
+.idea
+app/release
+
+.gradle/
+local.properties
+
+.DS_Store
+.

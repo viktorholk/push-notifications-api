@@ -1,180 +1,206 @@
 package com.viktorholk.apipushnotifications;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.io.UnsupportedEncodingException;
+
+import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okio.BufferedSource;
 
 public class NotificationsService extends Service {
-    private Boolean running = false;
-    private NotificationManager notificationManager;
+    public static boolean running = false;
+    private static final String LOG_TAG = "NotificationsService";
+    private static final String FOREGROUND_CHANNEL_ID = "FOREGROUND_PUSH_NOTIFICATIONS_API";
+    private static final String NOTIFICATIONS_CHANNEL_ID = "PUSH_NOTIFICATIONS_API";
+    private static final AtomicInteger notificationIdCounter = new AtomicInteger(1);
 
-    private Intent serviceFragmentBroadcast = new Intent();
-
-    private Notification getForegroundNotification(){
-        // Create the notification channel
-        String channelForegroundNotifications = "PNA_FOREGROUND_SERVICE_CHANNEL";
-        NotificationChannel channel = new NotificationChannel(channelForegroundNotifications, "Foreground Notification", NotificationManager.IMPORTANCE_LOW);
-        channel.setDescription("Channel for the service notification");
-        notificationManager.createNotificationChannel(channel);
-
-        // Build and return the notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelForegroundNotifications);
-        return builder.setOngoing(true)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .build();
-    }
-
-    private Notification getNotification(String title, String body){
-        // Create the notification channel
-        String channelNotifications = "PNA_PUSH_NOTIFICATIONS_CHANNEL";
-        NotificationChannel channel = new NotificationChannel(channelNotifications, "Push Notifications", NotificationManager.IMPORTANCE_DEFAULT);
-        channel.setDescription("Channel for push notifications");
-        channel.setLightColor(R.color.blue);
-        channel.setVibrationPattern(new long[]{0, 50, 250, 100});
-        channel.enableVibration(true);
-        channel.enableLights(true);
-        notificationManager.createNotificationChannel(channel);
-
-        // Build and return the notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelNotifications);
-
-        return builder
-                .setContentTitle(title)
-                .setContentText(body)
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setColor(ContextCompat.getColor(this, R.color.blue))
-                .build();
-    }
-
-    private void broadcast(String error) {
-
-        // if the error is null send a empty broadcast
-        if (!Objects.isNull(error)) {
-            serviceFragmentBroadcast.putExtra("error", error);
-            Log.i("Notification Service Broadcast", error);
-        }
-        sendBroadcast(serviceFragmentBroadcast);
-    }
+    private SharedPreferences sharedPreferences;
+    private OkHttpClient client;
+    private Call currentCall;
+    private boolean isStoppedByUser = false;
+    private final Intent serviceFragmentBroadcast = new Intent("serviceFragmentBroadcast");
 
     @Override
     public void onCreate() {
         super.onCreate();
-        notificationManager = getSystemService(NotificationManager.class);
-        // Start the foreground notification
-        startForeground(1, getForegroundNotification());
-
-        // Set the serviceFragmentBroadcastIntent's action
-        serviceFragmentBroadcast.setAction("serviceFragmentBroadcast");
+        sharedPreferences = MainActivity.sharedPreferences;
+        client = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(0, TimeUnit.MILLISECONDS)
+                .build();
+        createNotificationChannels();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         running = true;
-        Thread _thread = new Thread(new Runnable() {
+        Log.i(LOG_TAG, "Service started");
+        startForegroundService();
+        listenForNotifications();
+        return START_STICKY;
+    }
+
+    private void listenForNotifications() {
+        String url = MainActivity.sharedPreferences.getString("url", "");
+        Request request = new Request.Builder()
+                .addHeader("Accept", "text/event-stream")
+                .url(url)
+                .build();
+
+        currentCall = client.newCall(request);
+        currentCall.enqueue(new Callback() {
             @Override
-            public void run() {
-                while (running) {
-                    try {
-                        // Get the URL
-                        final String url = MainActivity.sharedPreferences.getString("url", "");
-                        if (url.equals("")) continue;
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                handleFailure(e);
+            }
 
-                        // Create the response
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    if (response.has("data")) {
-                                        String title = response.getJSONObject("data").getString("title");
-                                        String body = response.getJSONObject("data").getString("body");
-
-                                        // Send empty broadcast
-                                        // This tells the service fragment to clear the error messages - if there is any
-                                        broadcast(null);
-
-                                        // Each notification has to have a unique id so we dont overwrite it
-                                        // We track the notificaitons the the shared preferences
-                                        int notificationNumber = MainActivity.sharedPreferences.getInt("notificationNumber", 2);
-
-                                        // Increment the notificaton number in the prefs
-                                        SharedPreferences.Editor editor = MainActivity.sharedPreferences.edit();
-                                        editor.putInt("notificationNumber", notificationNumber + 1);
-                                        editor.apply();
-
-                                        // Show the notificaton
-                                        notificationManager.notify(notificationNumber, getNotification(title, body));
-                                    }
-                                } catch (JSONException error) {
-                                    broadcast(error.toString());
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @SuppressLint("DefaultLocale")
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // Check whether or not it is a Java Volley error or the response
-                                if (Objects.isNull(error.networkResponse)) {
-                                    // Volley error
-                                    broadcast(error.toString());
-                                } else {
-                                    final int errorCode = error.networkResponse.statusCode;
-                                    final String errorMessage = error.toString();
-                                    // Parse the data from the API
-                                    try {
-                                        final String networkResponseData = new String(error.networkResponse.data, "utf-8");
-                                        final String responseBody = networkResponseData.isEmpty() ? "{}" : networkResponseData;
-
-                                        JSONObject jsonData = new JSONObject(responseBody);
-                                        broadcast(String.format("STATUS: %d%n%s%n%s", errorCode, errorMessage, jsonData));
-                                    } catch (Exception exception){
-                                        broadcast(String.format("%s", exception));
-                                    }
-                                }
-                                // Stop the service so the user can fix the API error
-                                stopSelf();
-                            }
-                        });
-                        // Add the request to the queue
-                        RequestService.getInstance(getBaseContext()).addToRequestQueue(jsonObjectRequest);
-
-                        // Convert the poll time to seconds for the thread to sleep
-                        final int hour = MainActivity.sharedPreferences.getInt("pollHour", 0);
-                        final int minute = MainActivity.sharedPreferences.getInt("pollMinute", 5);
-
-                        final int sleepTime = (hour * 3600 + minute * 60) * 1000;
-                        Thread.sleep(sleepTime);
-
-                    } catch (InterruptedException error) {
-                        broadcast(error.toString());
-                    }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    handleFailure(new IOException("Response failed with status code: " + response.code()));
+                    return;
                 }
+
+                if (!"text/event-stream".equals(response.header("Content-Type"))) {
+                    handleFailure(new IOException("Expected response content type to be an event stream"));
+                    return;
+                }
+
+                handleSuccess(response);
             }
         });
-        _thread.start();
-        return START_NOT_STICKY;
+    }
+
+    private void handleFailure(IOException e) {
+        Log.w(LOG_TAG, "Failure: " + e);
+        broadcast(e.toString(), true);
+        stopSelf();
+    }
+
+    private void handleSuccess(@NonNull Response response) throws IOException {
+        Log.i(LOG_TAG, "Successfully connected to " + response.request().url().toString());
+        broadcast("Connected", false);
+
+        BufferedSource source = response.body().source();
+        while (!isStoppedByUser) {
+            try {
+                String line = source.readUtf8Line();
+                if (line != null && line.startsWith("data: ")) {
+                    String data = line.substring(6).trim();
+                    Log.i(LOG_TAG, "Received data: " + data);
+                    if (!data.contains("Connected")) {
+                        PushNotification notification = new Gson().fromJson(data, PushNotification.class);
+                        showNotification(notification);
+                    }
+                }
+            } catch (Exception e) {
+                if (isStoppedByUser)
+                    broadcast("Stopped", false);
+                else
+                    handleFailure(new IOException("Lost connection"));
+
+                break;
+            }
+        }
+    }
+
+    private void createNotificationChannels() {
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        if (notificationManager == null) return;
+
+        NotificationChannel foregroundChannel = new NotificationChannel(
+                FOREGROUND_CHANNEL_ID,
+                "Foreground Service Channel",
+                NotificationManager.IMPORTANCE_LOW
+        );
+        foregroundChannel.setDescription("Push Notifications API Foreground Service");
+
+        NotificationChannel notificationChannel = new NotificationChannel(
+                NOTIFICATIONS_CHANNEL_ID,
+                "Notification Service Channel",
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        notificationChannel.setDescription("Channel for Push Notifications API Service");
+        notificationChannel.setLightColor(R.color.blue);
+        notificationChannel.setVibrationPattern(new long[]{0, 50, 250, 100});
+        notificationChannel.enableVibration(true);
+        notificationChannel.enableLights(true);
+
+        notificationManager.createNotificationChannel(foregroundChannel);
+        notificationManager.createNotificationChannel(notificationChannel);
+    }
+
+    private void startForegroundService() {
+        Notification notification = new NotificationCompat.Builder(this, FOREGROUND_CHANNEL_ID)
+                .setOngoing(true)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .build();
+
+        int serviceId = 1;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            startForeground(serviceId, notification);
+        } else {
+            startForeground(serviceId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+        }
+    }
+
+    private void showNotification(PushNotification notification) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATIONS_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setColor(ContextCompat.getColor(this, R.color.blue))
+                .setContentTitle(notification.getTitle())
+                .setContentText(notification.getMessage())
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            Log.i(LOG_TAG, "Notifying: " + notification.getTitle());
+            notificationManager.notify(notificationIdCounter.incrementAndGet(), builder.build());
+        }
+    }
+
+    private void broadcast(String message, boolean isError) {
+        if (!Objects.isNull(message)) {
+            serviceFragmentBroadcast.putExtra("message", message);
+            serviceFragmentBroadcast.putExtra("isError", isError);
+            Log.i("Notification Service Broadcast", message);
+        }
+        sendBroadcast(serviceFragmentBroadcast);
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        Log.i(LOG_TAG, "Service stopped");
         running = false;
+        isStoppedByUser = true;
+        if (currentCall != null) {
+            currentCall.cancel();
+        }
+        super.onDestroy();
     }
 
     @Nullable
