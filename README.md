@@ -72,6 +72,19 @@ In the configuration tab type in the `/events` endpoint on the server
   <img src="https://github.com/user-attachments/assets/32514246-545b-486e-9940-19d80c970aa2" alt="animated" />
 </p>
 
+## Common Asked Questions
+
+<details><summary>Notifications are not showing up</summary>
+
+Make sure notifications are enabled in your settings
+
+Settings > Notifications > App notifications
+
+![image](https://github.com/user-attachments/assets/12685adf-7a74-4915-bda6-045175031afb)
+
+
+</details>
+
 ## Issues
 
 Please report issues using [GitHub's issues tab](https://github.com/viktorholk/push-notifications-api/issues).
