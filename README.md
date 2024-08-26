@@ -65,7 +65,9 @@ The port can be changed in the ``server/.env`` file
 >
 ## Connect to the server stream
 
-In the configuration tab type in the `/events` endpoint on the server
+In the configuration tab type in the `/events` endpoint on your server
+
+You can find the IP-address in the server log
 
 
 <p align="center">
