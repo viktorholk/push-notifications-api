@@ -25,6 +25,7 @@ public class PushNotification {
     public String getMessage() {
         return message;
     }
+
     public String getUrl() {
         return url;
     }

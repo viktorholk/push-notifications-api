@@ -1,7 +1,5 @@
 package com.viktorholk.apipushnotifications;
 
-import static com.viktorholk.apipushnotifications.ConfigurationFragment.URL_PATTERN;
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -115,8 +113,8 @@ public class NotificationsService extends Service {
 
         // Try to reconnect
         if (withRetry && (retryCount < MAX_RETRIES)) {
-            broadcast(String.format("Retrying Connection (%s) \n%s", retryCount + 1, e), false);
             retryCount++;
+            broadcast(String.format("Retrying Connection (%s) \n%s", retryCount, e), false);
             try {
                 Thread.sleep(RETRY_TIME);
             } catch (InterruptedException interruptedException) {
@@ -148,8 +146,7 @@ public class NotificationsService extends Service {
             } catch (Exception e) {
                 if (isStoppedByUser) {
                     broadcast("Stopped", false);
-                }
-                else
+                } else
                     handleFailure(new IOException("Lost connection"), true);
                 break;
             }
@@ -207,10 +204,7 @@ public class NotificationsService extends Service {
         String notificationUrl = notification.getUrl();
         if (notificationUrl != null && !notificationUrl.isEmpty()) {
 
-            // Check if the URL matches the pattern, if not, prepend "http://"
-            if (!URL_PATTERN.matcher(notificationUrl).matches()) {
-                notificationUrl = "http://" + notificationUrl;
-            }
+            notificationUrl = Utils.parseURL(notificationUrl);
 
             // Create the intent and pending intent
             Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(notificationUrl));
