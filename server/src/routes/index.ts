@@ -27,8 +27,6 @@ router.post("/", (req: Request, res: Response) => {
 
   const { title, message, url } = req.body;
 
-  console.log(url)
-
   if (!title || title.trim() === "") {
     return res.status(400).send("'title' field is required");
   }
