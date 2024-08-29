@@ -44,25 +44,54 @@ The port can be changed in the ``server/.env`` file
 ## Create a Notification
 > ### Example using [curl](https://curl.se/)
 > ````
-> curl '127.0.0.1:5000' \
+> curl '127.0.0.1:3000' \
 > --header 'Content-Type: application/json' \
 > --data '{
 >    "title": "Foo Bar Baz!",
->     "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+>     "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+>     "url": "http://example.com",
 > }'
+> ````
+>|Property|Type|Description|Required|
+>|---|---|---|---|
+>|title|String|The title of the notification|**Yes**|
+>|message|String|The longer text that will be included in the notification|No|
+>|url|String|Open the URL on notifcation press|No|
+> 
+> #### Response
+> `Created 201`
+
+## Get All Notifications
+> 
+> ````
+> curl '127.0.0.1:3000'
 > ````
 > #### Response
 > ````
->{
->    "status": 201,
->    "message": "Successfully created notification",
->    "data": {
->        "title": "Foo Bar Baz!",
->        "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
->    }
->}
+>[
+>   {
+>      "title": "Foo Bar Baz!",
+>      "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+>      "url": "http://example.com",
+>   },
+>   ...
+>]
 > ````
->
+
+## Get Latest Notifications
+> 
+> ````
+> curl '127.0.0.1:3000/latest'
+> ````
+> #### Response
+> ````
+> {
+>    "title": "Foo Bar Baz!",
+>    "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+>    "url": "http://example.com",
+> }
+> ````
+
 ## Connect to the server stream
 
 In the configuration tab type in the `/events` endpoint on your server

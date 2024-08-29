@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment;
 import java.util.regex.Pattern;
 
 public class ConfigurationFragment extends Fragment {
-
-    private static final Pattern URL_PATTERN = Pattern.compile("https?:\\/\\/(.*)");
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -48,9 +46,7 @@ public class ConfigurationFragment extends Fragment {
         if (urlText.length() == 0)
             return;
 
-        if (!URL_PATTERN.matcher(urlText).matches()) {
-            urlText = "http://" + urlText;
-        }
+        urlText = Utils.parseURL(urlText);
 
         String urlShared = sharedPreferences.getString("url", "");
         if (!urlText.equals(urlShared)) {

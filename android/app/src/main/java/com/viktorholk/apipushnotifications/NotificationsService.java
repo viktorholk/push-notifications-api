@@ -3,10 +3,12 @@ package com.viktorholk.apipushnotifications;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -41,6 +43,11 @@ public class NotificationsService extends Service {
     private OkHttpClient client;
     private Call currentCall;
     private boolean isStoppedByUser = false;
+
+    private static final int MAX_RETRIES = 5;
+    private static final int RETRY_TIME = 2000;
+    private int retryCount = 0;
+
     private final Intent serviceFragmentBroadcast = new Intent("serviceFragmentBroadcast");
 
     @Override
@@ -64,6 +71,8 @@ public class NotificationsService extends Service {
     }
 
     private void listenForNotifications() {
+        broadcast("Connecting...", false);
+
         String url = MainActivity.sharedPreferences.getString("url", "");
         Request request = new Request.Builder()
                 .addHeader("Accept", "text/event-stream")
@@ -74,18 +83,19 @@ public class NotificationsService extends Service {
         currentCall.enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                handleFailure(e);
+                handleFailure(e, true);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                retryCount = 0;
                 if (!response.isSuccessful()) {
-                    handleFailure(new IOException("Response failed with status code: " + response.code()));
+                    handleFailure(new IOException("Response failed with status code: " + response.code()), false);
                     return;
                 }
 
                 if (!"text/event-stream".equals(response.header("Content-Type"))) {
-                    handleFailure(new IOException("Expected response content type to be an event stream"));
+                    handleFailure(new IOException("Expected response content type to be an event stream"), false);
                     return;
                 }
 
@@ -94,10 +104,27 @@ public class NotificationsService extends Service {
         });
     }
 
-    private void handleFailure(IOException e) {
-        Log.w(LOG_TAG, "Failure: " + e);
-        broadcast(e.toString(), true);
-        stopSelf();
+
+    private void handleFailure(IOException e, boolean withRetry) {
+        if (isStoppedByUser) {
+            broadcast("Stopped", false);
+            return;
+        }
+
+        // Try to reconnect
+        if (withRetry && (retryCount < MAX_RETRIES)) {
+            retryCount++;
+            broadcast(String.format("Retrying Connection (%s) \n%s", retryCount, e), false);
+            try {
+                Thread.sleep(RETRY_TIME);
+            } catch (InterruptedException interruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            listenForNotifications();
+        } else {
+            broadcast(e.toString(), true);
+            stopSelf();
+        }
     }
 
     private void handleSuccess(@NonNull Response response) throws IOException {
@@ -117,11 +144,10 @@ public class NotificationsService extends Service {
                     }
                 }
             } catch (Exception e) {
-                if (isStoppedByUser)
+                if (isStoppedByUser) {
                     broadcast("Stopped", false);
-                else
-                    handleFailure(new IOException("Lost connection"));
-
+                } else
+                    handleFailure(new IOException("Lost connection"), true);
                 break;
             }
         }
@@ -155,7 +181,6 @@ public class NotificationsService extends Service {
 
     private void startForegroundService() {
         Notification notification = new NotificationCompat.Builder(this, FOREGROUND_CHANNEL_ID)
-                .setOngoing(true)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();
 
@@ -176,6 +201,23 @@ public class NotificationsService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
+        String notificationUrl = notification.getUrl();
+        if (notificationUrl != null && !notificationUrl.isEmpty()) {
+
+            notificationUrl = Utils.parseURL(notificationUrl);
+
+            // Create the intent and pending intent
+            Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(notificationUrl));
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    this,
+                    0,
+                    notificationIntent,
+                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            builder.setContentIntent(pendingIntent);
+        }
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (notificationManager != null) {
             Log.i(LOG_TAG, "Notifying: " + notification.getTitle());
@@ -187,7 +229,7 @@ public class NotificationsService extends Service {
         if (!Objects.isNull(message)) {
             serviceFragmentBroadcast.putExtra("message", message);
             serviceFragmentBroadcast.putExtra("isError", isError);
-            Log.i("Notification Service Broadcast", message);
+            Log.i(LOG_TAG, message);
         }
         sendBroadcast(serviceFragmentBroadcast);
     }
