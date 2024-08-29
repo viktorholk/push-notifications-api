@@ -75,7 +75,6 @@ public class ServiceFragment extends Fragment {
         } else {
             // Clear the previous error message
             serviceMessageTextView.setText("");
-            Log.e("test", Boolean.toString(NotificationsService.running));
 
             // Start the service
             getActivity().startService(new Intent(getActivity(), NotificationsService.class));

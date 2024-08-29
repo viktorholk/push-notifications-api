@@ -14,7 +14,8 @@ import java.util.regex.Pattern;
 
 public class ConfigurationFragment extends Fragment {
 
-    private static final Pattern URL_PATTERN = Pattern.compile("https?:\\/\\/(.*)");
+
+    public static final Pattern URL_PATTERN = Pattern.compile("https?:\\/\\/(.*)");
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
