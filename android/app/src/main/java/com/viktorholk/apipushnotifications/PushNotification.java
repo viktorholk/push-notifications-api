@@ -1,11 +1,4 @@
 package com.viktorholk.apipushnotifications;
-
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
-import java.time.LocalDateTime;
-
 public class PushNotification {
 
     private String title;

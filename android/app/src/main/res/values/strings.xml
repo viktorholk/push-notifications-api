@@ -1,4 +1,3 @@
 <resources>
     <string name="app_name">Push Notifications API</string>
-    <string name="sharedPreferences">APN Shared Preferences</string>
 </resources>

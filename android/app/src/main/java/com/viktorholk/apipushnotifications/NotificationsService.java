@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -37,9 +36,10 @@ public class NotificationsService extends Service {
     private static final String LOG_TAG = "NotificationsService";
     private static final String FOREGROUND_CHANNEL_ID = "FOREGROUND_PUSH_NOTIFICATIONS_API";
     private static final String NOTIFICATIONS_CHANNEL_ID = "PUSH_NOTIFICATIONS_API";
+    private final Intent serviceFragmentBroadcast = new Intent("serviceFragmentBroadcast");
     private static final AtomicInteger notificationIdCounter = new AtomicInteger(1);
 
-    private SharedPreferences sharedPreferences;
+    private String url;
     private OkHttpClient client;
     private Call currentCall;
     private boolean isStoppedByUser = false;
@@ -48,16 +48,16 @@ public class NotificationsService extends Service {
     private static final int RETRY_TIME = 2000;
     private int retryCount = 0;
 
-    private final Intent serviceFragmentBroadcast = new Intent("serviceFragmentBroadcast");
-
     @Override
     public void onCreate() {
         super.onCreate();
-        sharedPreferences = MainActivity.sharedPreferences;
         client = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(0, TimeUnit.MILLISECONDS)
                 .build();
+
+        url = Shared.getString(this, "url", "");
+
         createNotificationChannels();
     }
 
@@ -73,7 +73,6 @@ public class NotificationsService extends Service {
     private void listenForNotifications() {
         broadcast("Connecting...", false);
 
-        String url = MainActivity.sharedPreferences.getString("url", "");
         Request request = new Request.Builder()
                 .addHeader("Accept", "text/event-stream")
                 .url(url)
@@ -204,7 +203,7 @@ public class NotificationsService extends Service {
         String notificationUrl = notification.getUrl();
         if (notificationUrl != null && !notificationUrl.isEmpty()) {
 
-            notificationUrl = Utils.parseURL(notificationUrl);
+            notificationUrl = Utils.formatURL(notificationUrl);
 
             // Create the intent and pending intent
             Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(notificationUrl));
