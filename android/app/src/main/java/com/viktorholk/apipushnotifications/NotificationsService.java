@@ -43,6 +43,8 @@ public class NotificationsService extends Service {
     private OkHttpClient client;
     private Call currentCall;
     private boolean isStoppedByUser = false;
+    // We only want to display the disconnected notification if we have been connected
+    private boolean haveEstablishedConnection = false;
 
     private static final int MAX_RETRIES = 5;
     private static final int RETRY_TIME = 2000;
@@ -98,6 +100,8 @@ public class NotificationsService extends Service {
                     return;
                 }
 
+                haveEstablishedConnection = true;
+
                 handleSuccess(response);
             }
         });
@@ -121,6 +125,12 @@ public class NotificationsService extends Service {
             }
             listenForNotifications();
         } else {
+            if (haveEstablishedConnection) {
+                PushNotification disconnectedNotification = new PushNotification("Lost Connection to the Server", e.toString(), null);
+                showNotification(disconnectedNotification);
+            }
+
+
             broadcast(e.toString(), true);
             stopSelf();
         }
