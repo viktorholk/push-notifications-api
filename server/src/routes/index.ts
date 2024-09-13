@@ -6,6 +6,7 @@ const router = Router();
 interface PushNotification {
   title: string;
   message?: string;
+  url?: string
 }
 
 type ClientContext = { req: Request; res: Response };
@@ -23,13 +24,14 @@ function sendNotifications(notification: PushNotification): void {
 
 // Create new notification
 router.post("/", (req: Request, res: Response) => {
-  const { title, message } = req.body;
+
+  const { title, message, url } = req.body;
 
   if (!title || title.trim() === "") {
     return res.status(400).send("'title' field is required");
   }
 
-  const notification: PushNotification = { title, message };
+  const notification: PushNotification = { title, message, url };
 
   notifications.push(notification);
   sendNotifications(notification);

@@ -18,59 +18,111 @@ It is a tool for developers that need a easy way to post notifications to their 
 
 The application is great for IoT (Internet of Things). You could for example post a notification to your phone every time your garden needs watering when a sensor has detected the level of soil moisture to be low. The possibilites are up to you!
 
-You can download the Android app through [Google Play](https://play.google.com/store/apps/details?id=com.viktorholk.apipushnotifications) or download the latest apk from the [releases](https://github.com/viktorholk/push-notifications-api/releases).
 
-# Usage
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7f6e2fc4-acb6-4f8d-b369-b91be488fbb2" alt="animated" />
 </p>
 
-- Configuration  
-  In the configuration tab, you can configure the endpoint which the application will listen to for the notifications.  
-- Service  
-  In the service tab, you can toggle the notification service.
+# Installation
+## Android App
+You can download the Android app through [Google Play](https://play.google.com/store/apps/details?id=com.viktorholk.apipushnotifications) or download the latest apk from the [releases](https://github.com/viktorholk/push-notifications-api/releases).
 
-# Notifications
-## Start the server
-Navigate to ``server/`` and run 
-````
-npm i
-npm start
-````
-The app will by default run on port 3000 and the endpoint for the notifications are ``/events``
+### Connect
 
-The port can be changed in the ``server/.env`` file
-## Create a Notification
-> ### Example using [curl](https://curl.se/)
-> ````
-> curl '127.0.0.1:5000' \
-> --header 'Content-Type: application/json' \
-> --data '{
->    "title": "Foo Bar Baz!",
->     "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-> }'
-> ````
-> #### Response
-> ````
->{
->    "status": 201,
->    "message": "Successfully created notification",
->    "data": {
->        "title": "Foo Bar Baz!",
->        "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
->    }
->}
-> ````
->
-## Connect to the server stream
+In the configuration tab type in the `/events` endpoint on your server
 
-In the configuration tab type in the `/events` endpoint on the server
+You can find the IP-address in the server log
 
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/32514246-545b-486e-9940-19d80c970aa2" alt="animated" />
 </p>
+
+## Server
+
+If you haven't already, install [Node](https://nodejs.org/en/download/prebuilt-binaries).
+### Clone the Project
+
+```
+git clone git@github.com:viktorholk/push-notifications-api.git
+cd push-notifications-api
+npm i
+```
+### Start the Server
+```
+npm start
+```
+
+The app will by default run on port 3000 and the endpoint for the notification events are ``/events``
+
+The port can be changed in the ``server/.env`` file
+
+### API Reference
+
+Replace `127.0.0.1:3000` with your IP and port
+
+#### Push Notification
+
+```http
+POST http://127.0.0.1:3000
+```
+<details><summary>Example Curl</summary>
+  
+````
+curl '127.0.0.1:3000' \
+--header 'Content-Type: application/json' \
+--data '{
+   "title": "Foo Bar Baz!",
+    "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "http://example.com",
+}'
+````
+
+</details>
+
+|Property|Type|Description|Required|
+|---|---|---|---|
+|title|String|The title of the notification|**Yes**|
+|message|String|The longer text that will be included in the notification|No|
+|url|String|Open the URL on notifcation press|No|
+
+##### Response
+`Created 201`
+
+#### Get All Notifications
+
+```http
+GET http://127.0.0.1:3000
+```
+
+##### Response
+````
+[
+  {
+     "title": "Foo Bar Baz!",
+     "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+     "url": "http://example.com",
+  },
+  ...
+]
+````
+
+#### Get The Latest Notification
+
+```http
+GET http://127.0.0.1:3000/latest
+```
+
+##### Response
+````
+{
+   "title": "Foo Bar Baz!",
+   "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+   "url": "http://example.com",
+}
+````
+
 
 ## Common Asked Questions
 
