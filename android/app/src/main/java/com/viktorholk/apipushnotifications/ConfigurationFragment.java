@@ -1,6 +1,5 @@
 package com.viktorholk.apipushnotifications;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,12 +8,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import java.util.regex.Pattern;
-
 public class ConfigurationFragment extends Fragment {
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
 
     public ConfigurationFragment() {
         super(R.layout.fragment_configuration);
@@ -23,8 +17,6 @@ public class ConfigurationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPreferences = MainActivity.sharedPreferences;
-        editor = sharedPreferences.edit();
     }
 
     @Override
@@ -34,25 +26,21 @@ public class ConfigurationFragment extends Fragment {
         EditText urlEditText = view.findViewById(R.id.urlEditText);
         Button applyButton = view.findViewById(R.id.applyButton);
 
-        String urlShared = sharedPreferences.getString("url", "");
-        if (!urlShared.isEmpty()) {
-            urlEditText.setText(urlShared);
+        String url = Shared.getString(getActivity(), "url", "");
+        if (!url.isEmpty()) {
+            urlEditText.setText(url);
         }
 
         applyButton.setOnClickListener(v -> applyConfiguration(urlEditText.getText().toString()));
     }
 
-    private void applyConfiguration(String urlText) {
-        if (urlText.length() == 0)
+    private void applyConfiguration(String newUrl) {
+        if (newUrl.length() == 0)
             return;
 
-        urlText = Utils.parseURL(urlText);
+        String url = Utils.formatURL(newUrl);
 
-        String urlShared = sharedPreferences.getString("url", "");
-        if (!urlText.equals(urlShared)) {
-            editor.putString("url", urlText);
-            editor.apply();
-        }
+        Shared.saveData(getActivity(), "url", url);
 
         navigateToServiceFragment();
     }
@@ -61,6 +49,7 @@ public class ConfigurationFragment extends Fragment {
         MainActivity.fragmentManager.beginTransaction()
                 .replace(R.id.fragmentView, ServiceFragment.class, null)
                 .commit();
+
         MainActivity.bottomNavigationView.setSelectedItemId(R.id.service);
     }
 }

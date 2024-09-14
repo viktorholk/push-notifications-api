@@ -3,7 +3,7 @@ package com.viktorholk.apipushnotifications;
 import java.util.regex.Pattern;
 
 public class Utils {
-    public static String parseURL(String value) {
+    public static String formatURL(String value) {
         final Pattern pattern = Pattern.compile("https?:\\/\\/(.*)");
 
         // Add http to the URL if no protocol is defined
@@ -13,6 +13,4 @@ public class Utils {
 
         return value;
     }
-
-
 }

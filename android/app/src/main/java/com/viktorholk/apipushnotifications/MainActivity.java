@@ -1,7 +1,5 @@
 package com.viktorholk.apipushnotifications;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -12,8 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-
-    public static SharedPreferences sharedPreferences;
     public static FragmentManager fragmentManager;
     public static BottomNavigationView bottomNavigationView;
 
@@ -22,7 +18,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initFields();
+        fragmentManager = getSupportFragmentManager();
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         setupBottomNavigationView();
 
@@ -32,12 +29,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             loadFragment(ConfigurationFragment.class);
         }
-    }
-
-    private void initFields() {
-        sharedPreferences = getSharedPreferences(getString(R.string.sharedPreferences), Context.MODE_PRIVATE);
-        fragmentManager = getSupportFragmentManager();
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
     }
 
     private void setupBottomNavigationView() {
@@ -60,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isUrlConfigured() {
-        return !sharedPreferences.getString("url", "").isEmpty();
+        return !Shared.getString(MainActivity.this, "url", "").isEmpty();
     }
 
     private void loadFragment(Class<? extends Fragment> fragmentClass) {

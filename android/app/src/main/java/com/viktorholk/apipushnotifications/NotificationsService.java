@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -17,8 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.IconCompat;
 
 import com.google.gson.Gson;
+import com.viktorholk.apipushnotifications.models.PushNotification;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -37,27 +38,30 @@ public class NotificationsService extends Service {
     private static final String LOG_TAG = "NotificationsService";
     private static final String FOREGROUND_CHANNEL_ID = "FOREGROUND_PUSH_NOTIFICATIONS_API";
     private static final String NOTIFICATIONS_CHANNEL_ID = "PUSH_NOTIFICATIONS_API";
+    private final Intent serviceFragmentBroadcast = new Intent("serviceFragmentBroadcast");
     private static final AtomicInteger notificationIdCounter = new AtomicInteger(1);
 
-    private SharedPreferences sharedPreferences;
+    private String url;
     private OkHttpClient client;
     private Call currentCall;
     private boolean isStoppedByUser = false;
+    // We only want to display the disconnected notification if we have been connected
+    private boolean haveEstablishedConnection = false;
 
     private static final int MAX_RETRIES = 5;
     private static final int RETRY_TIME = 2000;
     private int retryCount = 0;
 
-    private final Intent serviceFragmentBroadcast = new Intent("serviceFragmentBroadcast");
-
     @Override
     public void onCreate() {
         super.onCreate();
-        sharedPreferences = MainActivity.sharedPreferences;
         client = new OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(0, TimeUnit.MILLISECONDS)
                 .build();
+
+        url = Shared.getString(this, "url", "");
+
         createNotificationChannels();
     }
 
@@ -73,7 +77,6 @@ public class NotificationsService extends Service {
     private void listenForNotifications() {
         broadcast("Connecting...", false);
 
-        String url = MainActivity.sharedPreferences.getString("url", "");
         Request request = new Request.Builder()
                 .addHeader("Accept", "text/event-stream")
                 .url(url)
@@ -99,6 +102,8 @@ public class NotificationsService extends Service {
                     return;
                 }
 
+                haveEstablishedConnection = true;
+
                 handleSuccess(response);
             }
         });
@@ -122,12 +127,17 @@ public class NotificationsService extends Service {
             }
             listenForNotifications();
         } else {
+            if (haveEstablishedConnection) {
+                PushNotification disconnectedNotification = new PushNotification("Lost Connection to the Server", e.toString(), null, null, null);
+                showNotification(disconnectedNotification);
+            }
+
             broadcast(e.toString(), true);
             stopSelf();
         }
     }
 
-    private void handleSuccess(@NonNull Response response) throws IOException {
+    private void handleSuccess(@NonNull Response response) {
         Log.i(LOG_TAG, "Successfully connected to " + response.request().url().toString());
         broadcast("Connected", false);
 
@@ -143,7 +153,8 @@ public class NotificationsService extends Service {
                         showNotification(notification);
                     }
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+                Log.e(LOG_TAG, e.toString());
                 if (isStoppedByUser) {
                     broadcast("Stopped", false);
                 } else
@@ -194,20 +205,30 @@ public class NotificationsService extends Service {
 
     private void showNotification(PushNotification notification) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATIONS_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setColor(ContextCompat.getColor(this, R.color.blue))
                 .setContentTitle(notification.getTitle())
                 .setContentText(notification.getMessage())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
-        String notificationUrl = notification.getUrl();
+        final IconCompat customIcon = notification.getIcon();
+        if (!Objects.isNull(customIcon))
+            builder.setSmallIcon(customIcon);
+        else
+            builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
+
+        final int customColor = notification.getColor();
+        if (customColor != -1)
+            builder.setColor(customColor);
+        else
+            builder.setColor(ContextCompat.getColor(this, R.color.blue));
+
+        final String notificationUrl = notification.getUrl();
         if (notificationUrl != null && !notificationUrl.isEmpty()) {
 
-            notificationUrl = Utils.parseURL(notificationUrl);
+            final String formattedNotificationUrl = Utils.formatURL(notificationUrl);
 
             // Create the intent and pending intent
-            Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(notificationUrl));
+            Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(formattedNotificationUrl));
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     this,
                     0,

@@ -1,12 +1,10 @@
 package com.viktorholk.apipushnotifications;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,7 +48,6 @@ public class ServiceFragment extends Fragment {
 
         serviceToggleButton.setOnClickListener(view1 -> toggleService());
     }
-
 
     private void toggleServiceView(Context context, boolean isRunning) {
         int iconRes = isRunning ? R.drawable.ic_play_arrow_black_24dp : R.drawable.ic_close_black_24dp;
