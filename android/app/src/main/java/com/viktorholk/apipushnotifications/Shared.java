@@ -7,7 +7,7 @@ public class Shared {
     private static SharedPreferences instance;
     private static synchronized SharedPreferences getInstance(Context context) {
         if (instance == null) {
-            instance = context.getSharedPreferences("APN Shared Preferences2", Context.MODE_PRIVATE);
+            instance = context.getSharedPreferences("APN Shared Preferences", Context.MODE_PRIVATE);
         }
         return instance;
     }

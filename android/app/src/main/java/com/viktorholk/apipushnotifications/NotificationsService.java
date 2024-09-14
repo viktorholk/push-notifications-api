@@ -16,8 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.IconCompat;
 
 import com.google.gson.Gson;
+import com.viktorholk.apipushnotifications.models.PushNotification;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -126,17 +128,16 @@ public class NotificationsService extends Service {
             listenForNotifications();
         } else {
             if (haveEstablishedConnection) {
-                PushNotification disconnectedNotification = new PushNotification("Lost Connection to the Server", e.toString(), null);
+                PushNotification disconnectedNotification = new PushNotification("Lost Connection to the Server", e.toString(), null, null, null);
                 showNotification(disconnectedNotification);
             }
-
 
             broadcast(e.toString(), true);
             stopSelf();
         }
     }
 
-    private void handleSuccess(@NonNull Response response) throws IOException {
+    private void handleSuccess(@NonNull Response response) {
         Log.i(LOG_TAG, "Successfully connected to " + response.request().url().toString());
         broadcast("Connected", false);
 
@@ -152,7 +153,8 @@ public class NotificationsService extends Service {
                         showNotification(notification);
                     }
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+                Log.e(LOG_TAG, e.toString());
                 if (isStoppedByUser) {
                     broadcast("Stopped", false);
                 } else
@@ -203,20 +205,30 @@ public class NotificationsService extends Service {
 
     private void showNotification(PushNotification notification) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATIONS_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                .setColor(ContextCompat.getColor(this, R.color.blue))
                 .setContentTitle(notification.getTitle())
                 .setContentText(notification.getMessage())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
-        String notificationUrl = notification.getUrl();
+        final IconCompat customIcon = notification.getIcon();
+        if (!Objects.isNull(customIcon))
+            builder.setSmallIcon(customIcon);
+        else
+            builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
+
+        final int customColor = notification.getColor();
+        if (customColor != -1)
+            builder.setColor(customColor);
+        else
+            builder.setColor(ContextCompat.getColor(this, R.color.blue));
+
+        final String notificationUrl = notification.getUrl();
         if (notificationUrl != null && !notificationUrl.isEmpty()) {
 
-            notificationUrl = Utils.formatURL(notificationUrl);
+            final String formattedNotificationUrl = Utils.formatURL(notificationUrl);
 
             // Create the intent and pending intent
-            Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(notificationUrl));
+            Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(formattedNotificationUrl));
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     this,
                     0,
