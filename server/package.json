@@ -1,6 +1,6 @@
 {
   "name": "Push Notifications API Server",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Server for handling push notifications",
   "scripts": {
     "start": "ts-node --files -r tsconfig-paths/register src/index.ts"
