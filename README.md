@@ -76,6 +76,8 @@ curl '127.0.0.1:3000' \
    "title": "Foo Bar Baz!",
     "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     "url": "http://example.com",
+    "icon": "suitcase.png",
+    "color": "#1554F0",
 }'
 ````
 
@@ -86,6 +88,8 @@ curl '127.0.0.1:3000' \
 |title|String|The title of the notification|**Yes**|
 |message|String|The longer text that will be included in the notification|No|
 |url|String|Open the URL on notifcation press|No|
+|icon|String|24x24 icon file located in `server/src/icons`|No|
+|color|String|Customize the notification color. See supported [colors](https://developer.android.com/reference/android/graphics/Color#parseColor(java.lang.String)) |No|
 
 ##### Response
 `Created 201`
