@@ -77,7 +77,7 @@ curl '127.0.0.1:3000' \
     "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     "url": "http://example.com",
     "icon": "suitcase.png",
-    "color": "#1554F0",
+    "color": "#1554F0"
 }'
 ````
 
