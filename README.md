@@ -104,9 +104,11 @@ GET http://127.0.0.1:3000
 ````
 [
   {
-     "title": "Foo Bar Baz!",
-     "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-     "url": "http://example.com",
+    "title": "Foo Bar Baz!",
+    "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "http://example.com",
+    "icon": "base64encoded...",
+    "color": "#1554F0"
   },
   ...
 ]
@@ -121,9 +123,11 @@ GET http://127.0.0.1:3000/latest
 ##### Response
 ````
 {
-   "title": "Foo Bar Baz!",
-   "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-   "url": "http://example.com",
+  "title": "Foo Bar Baz!",
+  "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "url": "http://example.com",
+  "icon": "base64encoded...",
+  "color": "#1554F0"
 }
 ````
 
