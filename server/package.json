@@ -3,7 +3,9 @@
   "version": "1.2.2",
   "description": "Server for handling push notifications",
   "scripts": {
-    "start": "ts-node --files -r tsconfig-paths/register src/index.ts"
+    "start": "ts-node --files -r tsconfig-paths/register src/index.ts",
+    "build": "tsc",
+    "start:native":"node -r tsconfig-paths/register dist/index.js"
   },
   "keywords": [],
   "author": "",
