@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -61,6 +62,14 @@ public class NotificationsService extends Service {
                 .build();
 
         url = Shared.getString(this, "url", "");
+
+        try {
+            HttpUrl.parse(url);
+        } catch (IllegalArgumentException e) {
+            Log.e(LOG_TAG, "Invalid URL format: " + url, e);
+            stopSelf();
+            return;
+        }
 
         createNotificationChannels();
     }
