@@ -5,7 +5,7 @@
   "scripts": {
     "start": "ts-node --files -r tsconfig-paths/register src/index.ts",
     "build": "tsc",
-    "start:native":"node -r tsconfig-paths/register dist/index.js"
+    "start:native": "node -r tsconfig-paths/register dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +28,7 @@
     "ip": "^2.0.1",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "uuid": "^11.0.2"
   }
 }
