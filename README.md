@@ -46,12 +46,12 @@ If you haven't already, install [Node](https://nodejs.org/en/download/prebuilt-b
 
 ```
 git clone git@github.com:viktorholk/push-notifications-api.git
-cd push-notifications-api
+cd push-notifications-api/server
 npm i
 ```
 ### Start the Server
 ```
-npm start
+npm run start
 ```
 
 The app will by default run on port 3000 and the endpoint for the notification events are ``/events``
