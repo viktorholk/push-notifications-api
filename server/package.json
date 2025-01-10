@@ -1,5 +1,5 @@
 {
-  "name": "Push Notifications API Server",
+  "name": "push-notifications-api-server",
   "version": "1.2.2",
   "description": "Server for handling push notifications",
   "scripts": {
