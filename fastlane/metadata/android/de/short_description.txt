@@ -1,0 +1,1 @@
+Senden Sie Push-Benachrichtigungen an Ihr Android-Telefon über eine REST-API
