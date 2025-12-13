@@ -49,9 +49,7 @@ public class NotificationsService extends Service {
     // We only want to display the disconnected notification if we have been connected
     private boolean haveEstablishedConnection = false;
 
-    private static final int MAX_RETRIES = 5;
-    private static final int RETRY_TIME = 2000;
-    private int retryCount = 0;
+    private static final int RETRY_TIME = 20000;
 
     @Override
     public void onCreate() {
@@ -100,7 +98,6 @@ public class NotificationsService extends Service {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                retryCount = 0;
                 if (!response.isSuccessful()) {
                     handleFailure(new IOException("Response failed with status code: " + response.code()), false);
                     return;
@@ -126,9 +123,8 @@ public class NotificationsService extends Service {
         }
 
         // Try to reconnect
-        if (withRetry && (retryCount < MAX_RETRIES)) {
-            retryCount++;
-            broadcast(String.format("Retrying Connection (%s) \n%s", retryCount, e), false);
+        if (withRetry) {
+            broadcast(String.format("Retrying Connection (%s) \n%s", e), false);
             try {
                 Thread.sleep(RETRY_TIME);
             } catch (InterruptedException interruptedException) {
