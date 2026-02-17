@@ -20,13 +20,27 @@ public class PushNotification {
     private String color;
 
 
-    public PushNotification(String title, String message, String url, String icon, String color) {
+    public PushNotification(String title, String message, String url, String icon, String color, String token, String createdAt) {
         this.title = title;
         this.message = message;
         this.url = url;
         this.icon = icon;
         this.color = color;
+        this.token = token;
+        this.createdAt = createdAt;
     }
+
+    private String token;
+    private String createdAt;
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
 
 
     public String getTitle() {

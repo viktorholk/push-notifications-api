@@ -14,125 +14,141 @@
 
 Push Notifications API is a simple Android app for displaying notifications on your phone through a REST-API. Using a Node server with server sent events.
 
-**New:** We now offer a fully hosted version! You don't need to set up your own server to get started. Just download the app, generate a token, and you're ready to go.
+It is a tool for developers that need a easy way to post notifications to their phone. The application requires an API to handle all the notifications. There is a working example of a Node server in the [server](https://github.com/viktorholk/push-notifications-api/tree/main/server) folder that works with the Android app.
 
-It is a tool for developers that need a easy way to post notifications to their phone. The application is great for IoT (Internet of Things) projects. You could for example post a notification to your phone every time your garden needs watering when a sensor has detected the level of soil moisture to be low. Connect your custom hardware and scripts with a simple API call.
+The application is great for IoT (Internet of Things). You could for example post a notification to your phone every time your garden needs watering when a sensor has detected the level of soil moisture to be low. The possibilites are up to you!
+
+
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7f6e2fc4-acb6-4f8d-b369-b91be488fbb2" alt="animated" />
 </p>
 
-# Getting Started
-
-## 1. Get the App
+# Installation
+## Android App
 You can download the Android app through [Google Play](https://play.google.com/store/apps/details?id=com.viktorholk.apipushnotifications) or download the latest apk from the [releases](https://github.com/viktorholk/push-notifications-api/releases).
 
-## 2. Choose Your Setup
+### Connect
 
-### Option A: Hosted Service (Easiest)
-1. Go to [push-notifications-api.com](https://push-notifications-api.com)
-2. Click **Generate New Token**
-3. Open the Android app settings and enter your token (or scan the QR code if available)
-4. Start sending notifications!
+In the configuration tab type in the `/events` endpoint on your server
 
-### Option B: Self-Hosted
-Prefer to run your own server? No problem.
+You can find the IP-address in the server log
 
-1. **Clone the Project**
-   ```bash
-   git clone git@github.com:viktorholk/push-notifications-api.git
-   cd push-notifications-api/server
-   npm i
-   ```
 
-2. **Start the Server**
-   ```bash
-   npm run start
-   ```
-   The app runs on port 3000 by default.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/32514246-545b-486e-9940-19d80c970aa2" alt="animated" />
+</p>
 
-3. **Connect the App**
-   In the Android app configuration, enter your server's address (e.g., `http://YOUR_IP:3000`).
+## Server
 
-# API Reference
+If you haven't already, install [Node](https://nodejs.org/en/download/prebuilt-binaries).
+### Clone the Project
 
-These examples assume you are using the hosted service. If self-hosting, replace `https://push-notifications-api.com` with your server address (e.g., `http://127.0.0.1:3000`).
-
-## Send Notification
-
-```http
-POST /notifications
+```
+git clone git@github.com:viktorholk/push-notifications-api.git
+cd push-notifications-api/server
+npm i
+```
+### Start the Server
+```
+npm run start
 ```
 
+The app will by default run on port 3000 and the endpoint for the notification events are ``/events``
+
+The port can be changed in the ``server/.env`` file
+
+### API Reference
+
+Replace `127.0.0.1:3000` with your IP and port
+
+#### Push Notification
+
+```http
+POST http://127.0.0.1:3000
+```
 <details><summary>Example Curl</summary>
   
-````bash
-curl -X POST https://push-notifications-api.com/notifications \
-  -H "Content-Type: application/json" \
-  -d '{
-    "token": "YOUR_TOKEN_HERE",
-    "title": "Garden Alert",
-    "message": "The soil moisture is low. Time to water the plants!",
-    "url": "https://example.com/garden-cam",
+````
+curl '127.0.0.1:3000' \
+--header 'Content-Type: application/json' \
+--data '{
+   "title": "Foo Bar Baz!",
+    "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "http://example.com",
     "icon": "suitcase.png",
     "color": "#1554F0"
-  }'
+}'
 ````
 
 </details>
 
-| Property | Type | Description | Required |
+|Property|Type|Description|Required|
 |---|---|---|---|
-| `token` | String | Your unique access token | **Yes** |
-| `title` | String | The title of the notification | **Yes** |
-| `message` | String | The body text of the notification | No |
-| `url` | String | Open this URL when notification is tapped | No |
-| `icon` | String | Icon name (e.g., `suitcase.png`) | No |
-| `color` | String | Custom hex color (e.g., `#FF0000`) | No |
+|title|String|The title of the notification|**Yes**|
+|message|String|The longer text that will be included in the notification|No|
+|url|String|Open the URL on notifcation press|No|
+|icon|String|24x24 icon file located in `server/src/icons`|No|
+|color|String|Customize the notification color. See supported [colors](https://developer.android.com/reference/android/graphics/Color#parseColor(java.lang.String)) |No|
 
-### Response
-`201 Created`
+##### Response
+`Created 201`
 
-## Get All Notifications
+#### Get All Notifications
 
 ```http
-GET /notifications?token=YOUR_TOKEN
+GET http://127.0.0.1:3000
 ```
 
-<details><summary>Example Response</summary>
-
-````json
+##### Response
+````
 [
   {
-    "id": "...",
-    "title": "Garden Alert",
-    "message": "The soil moisture is low...",
-    "url": "https://example.com/garden-cam",
+    "title": "Foo Bar Baz!",
+    "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "url": "http://example.com",
     "icon": "base64encoded...",
-    "color": "#1554F0",
-    "createdAt": "2025-01-01T12:00:00.000Z"
-  }
+    "color": "#1554F0"
+  },
+  ...
 ]
 ````
-</details>
 
-## Get Latest Notification
+#### Get The Latest Notification
 
 ```http
-GET /latest?token=YOUR_TOKEN
+GET http://127.0.0.1:3000/latest
 ```
 
-# Troubleshooting
+##### Response
+````
+{
+  "title": "Foo Bar Baz!",
+  "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "url": "http://example.com",
+  "icon": "base64encoded...",
+  "color": "#1554F0"
+}
+````
+
+
+## Common Asked Questions
 
 <details><summary>Notifications are not showing up</summary>
 
-Make sure notifications are enabled in your settings:
-**Settings > Notifications > App notifications**
+Make sure notifications are enabled in your settings
+
+Settings > Notifications > App notifications
 
 ![image](https://github.com/user-attachments/assets/12685adf-7a74-4915-bda6-045175031afb)
 
+
 </details>
 
-# License
+## Issues
+
+Please report issues using [GitHub's issues tab](https://github.com/viktorholk/push-notifications-api/issues).
+
+## License
 
 Push Notifications API is under the [MIT LICENSE](LICENSE).

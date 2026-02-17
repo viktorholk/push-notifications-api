@@ -1,2 +1,7 @@
 .DS_Store
 .idea/
+
+# Astro
+docs/node_modules/
+docs/dist/
+docs/.astro/

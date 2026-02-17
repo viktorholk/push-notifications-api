@@ -1,0 +1,285 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Push Notifications API for Android">
+  <!-- Navigation -->
+  <nav class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </div>
+          <span class="font-bold text-xl tracking-tight text-gray-900">Push Notifications API</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="#docs" class="text-sm font-medium text-gray-600 hover:text-primary transition-colors hidden sm:block">Documentation</a>
+          <a href="https://github.com/viktorholk/push-notifications-api" target="_blank"
+            class="text-gray-500 hover:text-gray-900 transition-colors">
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd"
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-grow">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden pt-16 pb-12 lg:pt-24 lg:pb-32">
+      <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-12">
+
+        <!-- Hero Text -->
+        <div class="flex-1 text-center max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-primary text-sm font-medium mb-6">
+            <span class="flex h-2 w-2 rounded-full bg-primary"></span>
+            Open Source
+          </div>
+          <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-6">
+            Send notifications to your <span class="text-primary">Android devices</span> instantly
+          </h1>
+          <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+            A simple, developer-friendly REST API for sending real-time alerts, reminders, and data to your Android phone or tablet. No complex setup required.
+          </p>
+
+          <div class="mb-8 p-4 bg-blue-50 border border-blue-100 rounded-xl max-w-2xl mx-auto">
+            <h3 class="text-sm font-bold text-primary mb-1 uppercase tracking-wider flex items-center gap-2 justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Perfect for IoT
+            </h3>
+            <p class="text-sm text-gray-700">
+              Great for Internet of Things projects! Post a notification when your garden needs watering, or when a sensor detects motion. Connect your custom hardware and scripts with a simple API call.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+             <a href="https://play.google.com/store/apps/details?id=com.viktorholk.apipushnotifications" target="_blank"
+              class="transform hover:-translate-y-1 transition-transform duration-200">
+              <img alt="Get it on Google Play"
+                src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                class="h-16 shadow-lg rounded-lg">
+            </a>
+            <a href="https://github.com/viktorholk/push-notifications-api" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors h-[64px]">
+              <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" /></svg>
+              View Source
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How it Works -->
+    <div class="bg-gray-50 py-20 border-t border-gray-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">How it works</h2>
+          <p class="mt-4 text-lg text-gray-600">Start sending notifications in less than 2 minutes.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10">
+          <div class="relative">
+            <div class="absolute top-0 left-6 -ml-px h-full w-0.5 bg-gray-200 md:hidden"></div>
+            <div class="relative flex items-start gap-6">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-white font-bold text-xl shadow-lg shadow-blue-500/20 z-10">1</div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Get the App</h3>
+                <p class="text-gray-600">Download the Android app from the Google Play Store or get the APK from GitHub.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+             <div class="absolute top-0 left-6 -ml-px h-full w-0.5 bg-gray-200 md:hidden"></div>
+            <div class="relative flex items-start gap-6">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-white font-bold text-xl shadow-lg shadow-blue-500/20 z-10">2</div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Connect to Your Server</h3>
+                <p class="text-gray-600">Enter your server URL in the app and tap connect. A token is auto-generated for your device.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="relative flex items-start gap-6">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-white font-bold text-xl shadow-lg shadow-blue-500/20 z-10">3</div>
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Send Requests</h3>
+                <p class="text-gray-600">Send a POST request to your server's API endpoint with your token and message.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Example -->
+    <div id="docs" class="bg-white py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-12 items-start">
+          <div class="lg:w-1/2">
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-6">Simple API</h2>
+            <p class="text-lg text-gray-600 mb-8">
+              Sending a notification is as easy as making a single HTTP request. We support standard JSON payloads.
+            </p>
+
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Parameters</h3>
+            <ul class="space-y-4">
+              <li class="flex items-start gap-3">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded text-primary-dark">token</code>
+                <span class="text-gray-600 text-sm">Your unique access token (required)</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded text-primary-dark">title</code>
+                <span class="text-gray-600 text-sm">The title of the notification (required)</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded text-primary-dark">message</code>
+                <span class="text-gray-600 text-sm">The body text of the notification (optional)</span>
+              </li>
+               <li class="flex items-start gap-3">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded text-primary-dark">url</code>
+                <span class="text-gray-600 text-sm">URL to open when tapped (optional)</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded text-primary-dark">icon</code>
+                <span class="text-gray-600 text-sm">Icon name (e.g. "suitcase.png") (optional)</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded text-primary-dark">color</code>
+                <span class="text-gray-600 text-sm">Hex color code (e.g. "#1554F0") (optional)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="lg:w-1/2 w-full">
+            <div class="bg-slate-900 rounded-xl overflow-hidden shadow-2xl">
+              <div class="flex items-center px-4 py-3 bg-slate-800 border-b border-slate-700">
+                <div class="flex space-x-2">
+                  <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div class="ml-4 text-xs text-slate-400 font-mono">cURL example</div>
+              </div>
+              <div class="p-6 overflow-x-auto">
+                <pre class="font-mono text-sm leading-relaxed text-blue-300"><code><span class="text-purple-400">curl</span> -X POST \
+  <span class="text-green-400">http://YOUR_SERVER:3000/notifications</span> \
+  -H <span class="text-orange-300">"Content-Type: application/json"</span> \
+  -d <span class="text-yellow-300">&#123;
+    "token": "YOUR_TOKEN_HERE",
+    "title": "Hello World",
+    "message": "This is a test notification from the API",
+    "url": "https://google.com",
+    "icon": "suitcase.png",
+    "color": "#1554F0"
+  &#125;</span></code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="bg-gray-50 py-20 border-t border-gray-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Feature 1: Self-Hosted -->
+          <div class="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="h-12 w-12 bg-blue-100 text-primary rounded-xl flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Self-Hosted</h3>
+            <p class="text-gray-600 leading-relaxed">Run the server on your own hardware. Uses lightweight SQLite — just clone, install, and start sending notifications.</p>
+          </div>
+
+          <!-- Feature 2: Open Source -->
+          <div class="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+             <div class="h-12 w-12 bg-gray-100 text-gray-700 rounded-xl flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Open Source</h3>
+            <p class="text-gray-600 leading-relaxed">Both the <a href="https://github.com/viktorholk/push-notifications-api" class="text-primary hover:underline">server</a> and <a href="https://github.com/viktorholk/push-notifications-api/tree/main/android" class="text-primary hover:underline">Android app</a> are open source. Inspect the code, contribute, or customize to your needs.</p>
+          </div>
+
+          <!-- Feature 3: Real-time -->
+          <div class="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div class="h-12 w-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Real-time Delivery</h3>
+            <p class="text-gray-600 leading-relaxed">Powered by Server Sent Events (SSE) for instant, battery-efficient delivery to your Android device.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="bg-white py-20 border-t border-gray-100">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-12">Common Questions</h2>
+
+        <div class="space-y-6">
+          <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Notifications are not showing up?
+            </h3>
+            <p class="text-gray-600 ml-7">
+              Make sure notifications are enabled in your Android settings. Go to <span class="font-semibold text-gray-900">Settings > Notifications > App notifications</span> and ensure Push Notifications API is allowed.
+            </p>
+          </div>
+
+           <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+            <h3 class="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+              Supported Colors?
+            </h3>
+             <p class="text-gray-600 ml-7">
+              You can use any valid Hex color code (e.g., #FF0000 for red) to customize the accent color of the notification.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-white border-t border-gray-200">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="text-center md:text-left">
+        <p class="text-gray-500 text-sm">&copy; 2025 Push Notifications API. Open Source.</p>
+      </div>
+      <div class="flex space-x-8">
+        <a href="https://github.com/viktorholk/push-notifications-api" class="text-gray-400 hover:text-gray-900 transition-colors">
+          <span class="sr-only">GitHub</span>
+          <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill-rule="evenodd"
+              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+              clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+</Layout>
