@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 
-export type ClientContext = { req: Request; res: Response };
+export type ClientContext = { 
+    req: Request; 
+    res: Response;
+    token: string;
+};
 
 export type PushNotification = {
     id: string;
@@ -9,5 +13,6 @@ export type PushNotification = {
     url?: string,
     icon?: string,
     color?: string,
+    token?: string | null,
     createdAt: string
 }

@@ -1,6 +1,5 @@
 import correlationId from "correlation-id";
 import moment from "moment";
-import _ from "lodash";
 
 enum LogLevel {
     DEBUG,
@@ -20,6 +19,9 @@ export default class Logger {
         Logger.log(LogLevel.INFO, message, data, "\x1b[34m");
     }
 
+    static warn(message: any, data?: any) {
+        Logger.log(LogLevel.WARN, message, data, "\x1b[33m");
+    }
 
     static error(message: any, data?: any) {
         Logger.log(LogLevel.ERROR, message, data, "\x1b[31m");
@@ -53,7 +55,7 @@ export default class Logger {
         }
 
         console.log(prefix, message);
-        if (!_.isEmpty(data))
+        if (data && Object.keys(data).length > 0)
             console.log(prefix, JSON.stringify(data));
     }
 }

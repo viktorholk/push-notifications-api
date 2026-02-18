@@ -1,0 +1,185 @@
+{
+	"info": {
+		"_postman_id": "push-notifications-api",
+		"name": "Push Notifications API",
+		"description": "API collection for Push Notifications Server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register Device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.token) {",
+							"        pm.collectionVariables.set(\"token\", jsonData.token);",
+							"        console.log(\"Token saved to collection variables: \" + jsonData.token);",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"register"
+					]
+				},
+				"description": "Registers a new device token. (Only available in hosted mode)"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Notification",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Test Notification\",\n    \"message\": \"This is a test message\",\n    \"url\": \"https://example.com\",\n    \"icon\": \"smiley\",\n    \"color\": \"#FF0000\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/notifications",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notifications"
+					]
+				},
+				"description": "Creates a new notification"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Notifications",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/notifications?token={{token}}&since=",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notifications"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"description": "Device token"
+						},
+						{
+							"key": "since",
+							"value": "",
+							"description": "ISO timestamp to filter notifications created after this time"
+						}
+					]
+				},
+				"description": "Retrieves all notifications. Can filter by token and since timestamp."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Latest Notification",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "{{token}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/latest?token={{token}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"latest"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"description": "Device token"
+						}
+					]
+				},
+				"description": "Retrieves the most recent notification"
+			},
+			"response": []
+		},
+		{
+			"name": "Connect SSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/events?token={{token}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"events"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"description": "Device token"
+						}
+					]
+				},
+				"description": "Connect to Server-Sent Events stream"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
