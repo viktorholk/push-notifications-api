@@ -1,33 +1,40 @@
 package com.viktorholk.apipushnotifications.models;
 
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.core.graphics.drawable.IconCompat;
-
-import java.util.Objects;
 
 public class PushNotification {
 
     private String title;
     private String message;
     private String url;
-
     private String icon;
     private String color;
+    private String token;
+    private String createdAt;
 
-
-    public PushNotification(String title, String message, String url, String icon, String color) {
+    public PushNotification(String title, String message, String url, String icon, String color, String token, String createdAt) {
         this.title = title;
         this.message = message;
         this.url = url;
         this.icon = icon;
         this.color = color;
+        this.token = token;
+        this.createdAt = createdAt;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
 
     public String getTitle() {
         return title;
@@ -42,31 +49,24 @@ public class PushNotification {
     }
 
     public IconCompat getIcon() {
-        if (Objects.isNull(this.icon))
+        if (this.icon == null)
             return null;
 
         try {
             final byte[] bytes = Base64.decode(icon, Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
             return IconCompat.createWithBitmap(bitmap);
         } catch (Exception e) {
+            Log.e("PushNotification", "Error decoding icon", e);
             return null;
         }
-
-
     }
 
     public int getColor() {
         try {
             return Color.parseColor(this.color);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             return -1;
         }
     }
-
 }
-
-
-

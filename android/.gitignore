@@ -1,5 +1,6 @@
 .idea
 app/release
+build/
 
 .gradle/
 local.properties
