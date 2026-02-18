@@ -2,6 +2,7 @@ package com.viktorholk.apipushnotifications.ui
 
 import android.app.Application
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.viktorholk.apipushnotifications.NotificationsService
@@ -106,7 +107,7 @@ data class RegistrationResponse(val token: String)
                 return@use null
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ConfigViewModel", "Error registering device", e)
             null
         }
     }
@@ -179,7 +180,7 @@ data class RegistrationResponse(val token: String)
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("ConfigViewModel", "Error fetching notifications", e)
             }
         }
     }
@@ -202,7 +203,7 @@ data class RegistrationResponse(val token: String)
                     it.copy(notifications = listOf(notification) + it.notifications)
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("ConfigViewModel", "Error parsing notification broadcast", e)
             }
         }
 

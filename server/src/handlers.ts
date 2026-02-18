@@ -9,13 +9,26 @@ import { getDatabase } from "@/db";
 const db = getDatabase();
 let clients: ClientContext[] = [];
 
+const HEARTBEAT_INTERVAL_MS = 30000;
+
 export function addClient(req: Request, res: Response, token: string | undefined) {
   Logger.info(
     `${req.socket?.remoteAddress} connected${token ? ` with token ${token}` : ""}`,
   );
   clients.push({ req, res, token: token || "" });
 
+  // Send periodic heartbeat comments to keep the SSE connection alive
+  // through NAT tables, proxies, and carrier networks that kill idle connections
+  const heartbeat = setInterval(() => {
+    try {
+      res.write(": heartbeat\n\n");
+    } catch (e) {
+      clearInterval(heartbeat);
+    }
+  }, HEARTBEAT_INTERVAL_MS);
+
   req.on("close", () => {
+    clearInterval(heartbeat);
     Logger.info(`${req.socket?.remoteAddress} disconnected`);
     clients = clients.filter((client) => client.req !== req);
   });

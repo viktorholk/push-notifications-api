@@ -1,13 +1,12 @@
 import { Router, Request, Response } from "express";
 import { tokenMiddleware } from "@/middleware/token";
 import Logger from "@/utils/logger";
-import { 
-  addClient, 
-  createNotification, 
-  getAllNotifications, 
-  getLatestNotification, 
-  registerDevice,
-  getLatestNotification as getLatestNotificationLogic // To fetch latest for SSE
+import {
+  addClient,
+  createNotification,
+  getAllNotifications,
+  getLatestNotification,
+  registerDevice
 } from "./handlers";
 
 const router = Router();
@@ -105,11 +104,6 @@ router.get("/events", async (req: Request, res: Response) => {
   addClient(req, res, token);
 
   res.write("data: Connected\n\n");
-  
-  // NOTE: The user requested to remove the "send latest notification on connect" logic
-  // in the previous turn, so we are omitting it here. 
-  // If it needs to be added back, it would be done here by calling getLatestNotificationLogic
-  // and writing to res.
 });
 
 export default router;

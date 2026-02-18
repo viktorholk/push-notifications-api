@@ -9,8 +9,6 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
@@ -55,7 +53,7 @@ class NotificationsService : Service() {
         serviceFragmentBroadcast.setPackage(packageName)
         client = OkHttpClient.Builder()
             .connectTimeout(5, TimeUnit.SECONDS)
-            .readTimeout(0, TimeUnit.MILLISECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
             .build()
 
         url = Shared.getString(this, "url", "")
@@ -187,8 +185,7 @@ class NotificationsService : Service() {
                             }
                         }
                     }
-                    // If we break out of the read loop (EOF), it's a disconnect
-                    // Return from inner loop to trigger retry logic (wait)
+                    // If we break out of the read loop (EOF or timeout), it's a disconnect
                     throw IOException("Server closed connection")
 
                 } catch (e: Exception) {
