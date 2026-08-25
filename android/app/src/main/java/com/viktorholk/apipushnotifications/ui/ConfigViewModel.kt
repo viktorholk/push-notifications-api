@@ -67,6 +67,24 @@ class ConfigViewModel(application: Application) : AndroidViewModel(application) 
         _uiState.update { it.copy(errorMessage = null) }
     }
 
+    fun connect() {
+        if (uiState.value.selfHostedToken.isBlank()) {
+            registerAndConnect(uiState.value.selfHostedUrl)
+        } else {
+            saveAndConnect()
+        }
+    }
+
+    fun onNotificationPermissionDenied() {
+        _uiState.update {
+            it.copy(
+                isServiceRunning = false,
+                connectionStatus = "Disconnected",
+                errorMessage = "Notification permission is required. Enable it in Android Settings to connect."
+            )
+        }
+    }
+
     fun registerAndConnect(baseUrl: String) {
         val formattedUrl = formatUrl(baseUrl)
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
@@ -135,11 +153,7 @@ data class RegistrationResponse(val token: String)
     private fun startService() {
         val context = getApplication<Application>().applicationContext
         val intent = Intent(context, NotificationsService::class.java)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            context.startForegroundService(intent)
-        } else {
-            context.startService(intent)
-        }
+        context.startForegroundService(intent)
         _uiState.update { it.copy(isServiceRunning = true, serviceLogs = "Starting service...") }
     }
 
@@ -217,6 +231,7 @@ data class RegistrationResponse(val token: String)
                      message == "Connected" -> "Connected"
                      message == "Connecting..." -> "Connecting..."
                      message.startsWith("Retrying") -> "Reconnecting..."
+                     message == NotificationsService.TIMEOUT_MESSAGE -> "Paused"
                      message == "Stopped" -> "Disconnected"
                      else -> it.connectionStatus
                  }
@@ -224,7 +239,12 @@ data class RegistrationResponse(val token: String)
                  it.copy(
                      serviceLogs = if (it.serviceLogs.isEmpty()) message else "${it.serviceLogs}\n$message",
                      isServiceRunning = NotificationsService.running,
-                     connectionStatus = newStatus
+                     connectionStatus = newStatus,
+                     errorMessage = if (message == NotificationsService.TIMEOUT_MESSAGE) {
+                         message
+                     } else {
+                         it.errorMessage
+                     }
                  )
              }
         }

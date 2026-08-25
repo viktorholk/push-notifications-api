@@ -273,6 +273,8 @@ Make sure notifications are enabled in your Android settings:
 - Check that the port (default 3000) is open and accessible
 - The app will automatically reconnect on network changes
 
+**Android background limit:** On Android 15 and newer, apps targeting API level 35 or higher can run a data-sync foreground service for a total of six hours while in the background within a 24-hour period. When the limit is reached, Android requires the app to stop the SSE connection. Push notifications are paused until you reopen the app, which resets the timer and reconnects the service. See [Google's foreground service timeout documentation](https://developer.android.com/develop/background-work/services/fgs/timeout).
+
 </details>
 
 <details><summary>How do broadcast vs device-specific notifications work?</summary>

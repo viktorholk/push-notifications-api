@@ -271,6 +271,10 @@ class NotificationsService : Service() {
     private fun startForegroundService() {
         val notification = NotificationCompat.Builder(this, FOREGROUND_CHANNEL_ID)
             .setCategory(Notification.CATEGORY_SERVICE)
+            .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+            .setContentTitle("Push Notifications API")
+            .setContentText("Listening for notifications")
+            .setOngoing(true)
             .build()
 
         val serviceId = 1
@@ -279,6 +283,36 @@ class NotificationsService : Service() {
         } else {
             startForeground(serviceId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         }
+    }
+
+    override fun onTimeout(startId: Int, fgsType: Int) {
+        Log.w(LOG_TAG, "Foreground service timed out")
+        running = false
+        broadcast(TIMEOUT_MESSAGE, true)
+        showConnectionPausedNotification()
+        stopSelf()
+    }
+
+    private fun showConnectionPausedNotification() {
+        val reopenIntent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val reopenPendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            reopenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val notification = NotificationCompat.Builder(this, NOTIFICATIONS_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+            .setContentTitle("Notification connection paused")
+            .setContentText("Open the app to reconnect.")
+            .setContentIntent(reopenPendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        getSystemService(NotificationManager::class.java)
+            ?.notify(TIMEOUT_NOTIFICATION_ID, notification)
     }
 
     private fun showNotification(notification: PushNotification) {
@@ -360,9 +394,11 @@ class NotificationsService : Service() {
 
     companion object {
         var running = false
+        const val TIMEOUT_MESSAGE = "Connection paused by Android. Open the app to reconnect."
         private const val LOG_TAG = "NotificationsService"
         private const val FOREGROUND_CHANNEL_ID = "FOREGROUND_PUSH_NOTIFICATIONS_API"
         private const val NOTIFICATIONS_CHANNEL_ID = "PUSH_NOTIFICATIONS_API"
+        private const val TIMEOUT_NOTIFICATION_ID = 2
         private val notificationIdCounter = AtomicInteger(1)
         private const val RETRY_TIME = 20000
     }

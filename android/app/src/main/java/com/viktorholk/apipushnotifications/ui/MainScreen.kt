@@ -12,7 +12,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(viewModel: ConfigViewModel) {
+fun MainScreen(
+    viewModel: ConfigViewModel,
+    onConnectRequested: () -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -56,13 +59,7 @@ fun MainScreen(viewModel: ConfigViewModel) {
                     selfHostedToken = uiState.selfHostedToken,
                     isLoading = uiState.isLoading,
                     onSelfHostedUrlChange = viewModel::updateSelfHostedUrl,
-                    onConnect = {
-                        if (uiState.selfHostedToken.isBlank()) {
-                            viewModel.registerAndConnect(uiState.selfHostedUrl)
-                        } else {
-                            viewModel.saveAndConnect()
-                        }
-                    },
+                    onConnect = onConnectRequested,
                     onCopyToken = {
                          scope.launch {
                              snackbarHostState.showSnackbar("Token copied to clipboard")
